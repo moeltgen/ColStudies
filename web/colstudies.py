@@ -11,6 +11,7 @@ import globalvars as g
 import login
 import series
 import studies
+import study
 
 
 
@@ -40,6 +41,8 @@ jp.Route('/logout', login.logout)
 jp.Route('/studies', studies.studies)
 jp.Route('/series', series.series)
 
+jp.Route('/study/{agency}/{id}', study.study)
+jp.Route('/study/daraxml/{agency}/{id}', study.daraxml)
 
 print("Warning: urllib3.disable_warnings() is set - communication is not encrypted!")
 

@@ -91,8 +91,8 @@ def studies():
                     """
                     
                     #StudyDOILink = '<a href=' + StudyDOI + '>' + StudyDOI + '</a>'
-                    #DetailsLink = '<u><a href=/study/' + agency + '/' + Id + '>Details</a></u>'
-                    DetailsLink = ''
+                    DetailsLink = '<u><a href=/study/' + agency + '/' + Id + '>Details</a></u>'
+                    
                     row = {'Agency': agency, 'ID': Id, 'Version': Version, 'Title': title, 'TitleEN': titleEN, 'Details': DetailsLink}
                     grid.options.rowData.append(row)  
 
