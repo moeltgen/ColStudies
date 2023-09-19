@@ -43,6 +43,8 @@ jp.Route('/series', series.series)
 
 jp.Route('/study/{agency}/{id}', study.study)
 jp.Route('/study/daraxml/{agency}/{id}', study.daraxml)
+jp.Route('/study/dararegister/{agency}/{id}', study.dararegister)
+
 
 print("Warning: urllib3.disable_warnings() is set - communication is not encrypted!")
 

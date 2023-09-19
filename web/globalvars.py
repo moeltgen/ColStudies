@@ -20,6 +20,12 @@ colecticahostname = settings.colecticahostname
 colecticausername = settings.colecticausername
 colecticapassword = settings.colecticapassword
 
+#dara settings 
+daraapi = settings.daraapi
+darausername = settings.darausername
+darapassword = settings.darapassword
+
+
 #classes 
 button = 'm-2 p-2 text-xl text-white bg-blue-500 hover:bg-blue-700 rounded-full ' #flex items-center'
 

@@ -203,10 +203,10 @@ def register_dara(daraxmlfile, daraapi, username, password):
         if pos>0: print('Error!\n' + response.text[pos:pos+800])
     """
 
-    #write to output file 
-    f = open('daraapi_response', "w", encoding="utf-8")
-    f.write(response.text)
-    f.close()
+    ##write to output file 
+    #f = open('daraapi_response', "w", encoding="utf-8")
+    #f.write(response.text)
+    #f.close()
     
     #try to parse json response 
     try:
