@@ -281,6 +281,105 @@ def getListFromXPathAttributePair(node, xpath, label):
 
 
 
+def getCustomField(ddixml, xpath, label):
+    """
+    Get a value from a custom field in xpath from the DDI xml 
+    """
+    StringValue = ''
+    
+    root = remove_xml_ns(ddixml)
+    
+    
+    StringValue = getValueFromXPathCustomField(root, xpath, label)
+                
+    return StringValue 
+    
+    
+def AddAnnotation(ddixml, newversion, xpath, label, annotationtext):    
+    """
+    add an annotation to the current xml for xpath with label 
+    modify it, if existing 
+    e.g.: AddAnnotation(varxml, './/{ddi:logicalproduct:3_3}Variable/{ddi:reusable:3_3}UserAttributePair', 'Crosstabs')    
+    """
+    
+    from lxml import etree
+    #using lxml for namespace support 
+    #see https://lxml.de/tutorial.html#the-fromstring-function
+    
+    newxml = ''
+    
+    
+    try:
+        root = etree.fromstring(ddixml) ####remove_xml_ns(ddixml)
+        found=False 
+        
+        userids_all = root.findall(xpath)  
+        for uid in userids_all:
+            print('UserAttributePair found')
+            if uid.find('./{ddi:reusable:3_3}AttributeKey') != None:
+                print('AttributeKey found')
+                if uid.find('./{ddi:reusable:3_3}AttributeKey').text=='extension:CustomField':
+                    print('extension:CustomField found')
+                    jsonvalue = uid.find('./{ddi:reusable:3_3}AttributeValue').text 
+                    print('AttributeValue:', jsonvalue)
+                    j = json.loads(jsonvalue)
+                    if j['DisplayLabel']==label:
+                        #Annotation with this label already exists
+                        found = True 
+                        j['StringValue']=annotationtext
+                        uid.find('./AttributeValue').text = json.dumps(j)
+        
+        print('\n')    
+        print('found', found)    
+        
+        if not found:
+            xpathparent = './/{ddi:logicalproduct:3_3}Variable'
+            parent=root.find(xpathparent) 
+            if parent != None:
+                print('parent found')
+                
+                jsonString = '{"Title":{"en":"Crosstabs"},"Description":{},"ValueType":0,"HasValue":true,"RelationshipTargetType":"00000000-0000-0000-0000-000000000000","StringValue":"' + annotationtext + '","MultilingualStringValue":{},"BooleanValue":false,"HasDefinedType":false,"DisplayLabel":"Crosstabs"}'
+                #parent.add 
+                AttPair = etree.Element("{ddi:reusable:3_3}UserAttributePair")
+                parent.insert(4, AttPair) #insert after version tag
+                AttKey = etree.SubElement(AttPair, "{ddi:reusable:3_3}AttributeKey")
+                AttKey.text = "extension:CustomField" 
+                AttVal = etree.SubElement(AttPair, "{ddi:reusable:3_3}AttributeValue")
+                AttVal.text = jsonString 
+                
+                #set new version 
+                xpathversion = './/{ddi:reusable:3_3}Version'
+                xversion=parent.find(xpathversion) 
+                if xversion != None:
+                    print('xversion found')
+                    xversion.text=str(newversion)
+              
+                
+            print('needed to add new extension:CustomField!!')
+        else:
+            print('modified existing extension:CustomField!!')
+                
+        print('\n')    
+        
+        
+        
+        
+        
+        newxml = etree.tostring(root, encoding='unicode', pretty_print=True)
+        
+        #check and parse newxml
+        tree = etree.parse(StringIO(newxml))
+        
+        print(newxml)    
+        print('\n')    
+        
+        
+    
+    except Exception as e: 
+            print('500', 'Error '+str(e))
+       
+    return newxml
+
 
                 
 def getStudyNo(ddixml):
@@ -405,6 +504,24 @@ def getAbstract(ddixml, lang):
             
     return Abstract    
 
+def getAccessClass(ddixml, lang):
+    """
+    Get AccessClass for a study from the DDI xml 
+    """
+    AccessClass = ''
+    
+    root = remove_xml_ns(ddixml)
+    xml = '{http://www.w3.org/XML/1998/namespace}' #no xml: all namespaces were removed
+    
+    userids_all = root.findall('.//StudyUnit/Citation/accessRights')
+    
+    for uid in userids_all:
+        if xml+'lang' in uid.attrib:
+            if uid.attrib[xml+'lang']==lang:
+                AccessClass = uid.text
+            
+    return AccessClass    
+
 
 def buildCV(ddixml, xpath, Limit):
     """
@@ -494,6 +611,35 @@ def buildCV(ddixml, xpath, Limit):
     
     return CV 
     
+def getVarName(ddixml):
+    """
+    Get a variable name from the DDI xml 
+    """
+    VarName = ''
+    
+    root = remove_xml_ns(ddixml)
+    
+    userids_all = root.findall('.//VariableName/String')
+    for uid in userids_all:
+        VarName = uid.text
+            
+    return VarName    
+
+def getVarLabel(ddixml):
+    """
+    Get English variable label from the DDI xml 
+    """
+    VarLabel = ''
+    
+    root = remove_xml_ns(ddixml)
+    
+    userids_all = root.findall('.//Label/Content')
+    for uid in userids_all:
+        if uid.attrib['{http://www.w3.org/XML/1998/namespace}lang']=='en':
+            VarLabel = uid.text
+            
+    return VarLabel    
+
     
 def remove_xml_ns(xml):
     """
@@ -507,3 +653,20 @@ def remove_xml_ns(xml):
     root = it.root
     return root
 
+def print_xml_ns(xml):
+    """
+    Read xml from string, remove namespaces, return root
+    """
+    nslist = []
+    it = ET.iterparse(StringIO(xml))
+    for _, el in it:
+        prefix, has_namespace, postfix = el.tag.partition('}')
+        if has_namespace:
+            if not prefix in nslist: 
+                nslist.append(prefix)
+            #el.tag = postfix  # strip all namespaces
+
+    #for pre in nslist:
+    #    print(pre)
+    root = it.root
+    return root

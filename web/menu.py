@@ -42,10 +42,12 @@ def menu(wp):
     
     #show login status
     if not userName == '':
-        jp.Div(text='logged in as ' +  str(userName), a=wp, classes='text-right')
+        jp.Div(text=str(g.colecticahostname), a=wp, classes='text-right')
+        jp.Div(text='logged in as ' +  str(userName), a=wp, classes='text-right')        
         jp.Br(a=wp)
     else:
-        jp.Div(text='not logged in', a=wp, classes='text-right')
+        jp.Div(text=str(g.colecticahostname), a=wp, classes='text-right')
+        jp.Div(text='not logged in', a=wp, classes='text-right')        
         jp.Br(a=wp)        
         
     if not g.colecticahosthoststatus=='': 
@@ -59,5 +61,6 @@ def menu(wp):
     jp.Strong(text='Welcome to '+g.appname, a=wp)
      
     jp.Hr(a=wp)
+    jp.Br(a=wp)
     #-------------
     return wp

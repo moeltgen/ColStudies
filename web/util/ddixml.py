@@ -147,8 +147,14 @@ def ddixml_to_study(ddixml, cvcollection, studyurl):
     #do not use DOI at studyunit level, use physicalinstance
     #study['DOI'] = ed.getValueFromXPath(root, './/StudyUnit/UserID[@typeOfUserID="DOI"]')
     #study['Version'] = ed.getAttributeValueFromXPath(root, './/StudyUnit/UserID[@typeOfUserID="DOI"]', 'userIDVersion')
-    study['DOI'] = ed.getValueFromXPath(root, './/PhysicalInstance/UserID[@typeOfUserID="DOI"]')
-    study['Version'] = ed.getAttributeValueFromXPath(root, './/PhysicalInstance/UserID[@typeOfUserID="DOI"]', 'userIDVersion')
+    
+    #these function get the first value, but we need the last (current) DOI/Version:_
+    #study['DOI'] = ed.getValueFromXPath(root, './/PhysicalInstance/UserID[@typeOfUserID="DOI"]')
+    #study['Version'] = ed.getAttributeValueFromXPath(root, './/PhysicalInstance/UserID[@typeOfUserID="DOI"]', 'userIDVersion')
+    #so use the new functions:
+    study['DOI'] = ed.getDatasetDOI(ddixml)
+    study['Version'] = ed.getDatasetVersion(ddixml)
+    
     pubDate = ed.getValueFromXPath(root, './/PhysicalInstance/Citation/PublicationDate/SimpleDate') 
     pubDate = pubDate[0:10] #only date, no time 
     pubYear = pubDate[0:4] #only year
@@ -544,3 +550,105 @@ def getCVTerms(node, xpath, useGerman, cvcollitem):
 
     return returnlist
 
+def ddixml_to_var(ddixml, Limit, vagency='', vid='', vversion=''):
+    #import edindex as ed
+    import ast
+    """
+    ###########################################
+    Convert ddixml into a var object  
+    input: ddixml for complete study as returned by Colectica API
+    input optional: filter for variable varid, varagency, varversion
+    ###########################################
+    """
+    
+    #create a list of variables 
+    varlist = []
+        
+    #
+    #Map the ddi properties to the variable properties 
+    #
+    
+    root = ed.remove_xml_ns(ddixml) #complete study xml
+    xml = '{http://www.w3.org/XML/1998/namespace}' #no xml: all namespaces were removed    
+    
+        
+    #get a list of referenced variables
+    reflist = ed.get_referencelist(ddixml, './/DataRelationship/LogicalRecord/VariablesInRecord/VariableUsedReference')
+    i = 1
+    for ref in reflist:
+        processVariable = False 
+        if not (vagency == '' or vid == '' or vversion == '' ):
+            if (vagency == ref['Agency'] and vid == ref['ID'] and vversion == ref['Version'] ):
+                processVariable = True 
+        else:
+            processVariable = True 
+        
+        if processVariable:
+            varAgency = ref['Agency']
+            varID = ref['ID']
+            varVersion = ref['Version']
+            
+            #Select this variable
+            URNCondition = '[URN="urn:ddi:' + varAgency + ':' + varID + ':' + varVersion + '"]'
+            xpath = './/Variable' + URNCondition
+            variablenode = root.find(xpath)  
+            if not variablenode is None:
+                #Create a new variable object: just an empty object or defined variable with getnewvariable()
+                variable = {}
+                #variable = getnewvariable()
+                
+                #added WZM 
+                #variable['Agency'] = ref['Agency']
+                #variable['ID'] = ref['ID']
+                #variable['Version'] = ref['Version']
+            
+                
+                
+                #IDs
+                #varName = getValueFromXPath(root, './/Variable/VariableName/String')
+                varName = getValueFromXPath(variablenode, './/VariableName/String')
+                variable['ID'] = varName
+                variable['Name'] = varName
+                variable['LabelEN'] = getValueFromXPathWithAttribute(variablenode, './/Label/Content', xml+'lang', 'en')
+                variable['LabelDE'] = getValueFromXPathWithAttribute(variablenode, './/Label/Content', xml+'lang', 'de')
+                
+                #already set:
+                #varAgency = getValueFromXPath(variablenode, './/Agency')
+                #varID = getValueFromXPath(variablenode, './/ID')
+                #varVersion = getValueFromXPath(variablenode, './/Version')
+                
+                #var['Position']        #sequence in dataset is set on study level when processing all referenced variables 
+                variable['Position'] = i
+                
+                #Notes
+                variable['NoteTextEN'] = getValueFromXPathWithAttribute(variablenode, './/Description/Content', xml+'lang', 'en')   #ArchiveNote en 
+                variable['RemarkTextEN'] = getValueFromXPathCustomField(variablenode, './/UserAttributePair', 'Remark')             #RemarkText en 
+                variable['DerivationTextEN'] = getValueFromXPathCustomField(variablenode, './/UserAttributePair', 'Derivation')     #Derivation en 
+                variable['NoteTextDE'] = getValueFromXPathWithAttribute(variablenode, './/Description/Content', xml+'lang', 'de')   #ArchiveNote de 
+                variable['RemarkTextDE'] = getValueFromXPathCustomField(variablenode, './/UserAttributePair', 'Anmerkung')          #RemarkText de
+                variable['DerivationTextDE'] = getValueFromXPathCustomField(variablenode, './/UserAttributePair', 'Ableitung')      #Derivation de 
+              
+                
+                #Question: QuestionGrid or QuestionItem
+                #not here: variable['Question']= question
+                
+                #Values + Labels
+                #CodeValues and CategoryLabels
+                variable['Values'] = [] #start with empty list 
+                xpath = './/Variable' + URNCondition + '/VariableRepresentation/CodeRepresentation/CodeListReference'
+                ref = ed.get_reference(ddixml, xpath)
+                if not ref is None: 
+                    #Select this CodeListReference
+                    variable['Values'] = getVarValuesList(ddixml, ref['Agency'], ref['ID'], ref['Version'])
+                    variable['CodeListID'] = ref['ID']
+                
+                
+                
+                #variable complete
+                varlist.append(variable)
+                
+            if i == Limit:
+                print('Limited to '+str(Limit)+' variables for testing')
+                break
+            i += 1
+    return varlist

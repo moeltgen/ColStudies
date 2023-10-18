@@ -12,6 +12,8 @@ import login
 import series
 import studies
 import study
+import doiinfo 
+import starinfo
 
 
 
@@ -19,11 +21,25 @@ def home():
     #create web page 
     wp = g.templatewp()
     
-    if g.loggedin:
-        wp.add(jp.P(text='Welcome. Choose a menu item.')) 
-    else:
-        wp.add(jp.P(text='Welcome. This is where you manage the Colectica studies. After logging in, you can see a list of studies.'))
+    jp.Br(a=wp) 
+    wp.add(jp.P(text='Welcome. This is where you manage the Colectica studies. '))
+    jp.Br(a=wp) 
+    wp.add(jp.P(text='- Studies will show all studies of the Colectica Repository. You can then select a study to perform actions.')) 
+    wp.add(jp.P(text='- Series will show all series of the Colectica Repository. You can then show all studies within a series.')) 
+    wp.add(jp.P(text='- Actions include registration of DOIs with da|ra and managing file download permissions with DBKEdit.')) 
+    jp.Br(a=wp)
+    wp.add(jp.P(text='Settings can  be modified in settings.py (restart needed).')) 
+    jp.Br(a=wp)
     
+    if g.loggedin:
+        wp.add(jp.P(text='Choose a menu item.')) 
+        
+    else:
+        wp.add(jp.P(text='After logging in, you can see a list of studies.'))
+    
+    jp.Br(a=wp)
+    
+        
     return wp
 
 #start application server
@@ -39,12 +55,12 @@ print('')
 jp.Route('/login', login.login)
 jp.Route('/logout', login.logout)
 jp.Route('/studies', studies.studies)
+jp.Route('/studies/{agency}/{id}', studies.studies) 
 jp.Route('/series', series.series)
 
 jp.Route('/study/{agency}/{id}', study.study)
-jp.Route('/study/daraxml/{agency}/{id}', study.daraxml)
-jp.Route('/study/dararegister/{agency}/{id}', study.dararegister)
-
+jp.Route('/doiinfo/{agency}/{id}', doiinfo.doiinfo)
+jp.Route('/starinfo/{agency}/{id}', starinfo.starinfo)
 
 print("Warning: urllib3.disable_warnings() is set - communication is not encrypted!")
 

@@ -4,7 +4,7 @@
 
 import json
 import globalvars as g
-
+import xml.etree.ElementTree as ET
 import requests
     
 def get_jwtToken(hostname, username, password):
@@ -103,4 +103,30 @@ def get_an_item_version(AgencyId, Identifier, Version):
         else:
             return [response.status_code, '']
             
+
+def set_an_item_version(jsonitem):
+        """
+            This request updates an item 
+            https://docs.colectica.com/portal/technical/api/v1/#operation/ApiV1ItemByAgencyByIdByVersionGet
+            Request Type: POST
+            URL: /api/v1/item
             
+        """
+        
+        print('#######################')
+        print(jsonitem)
+        print('#######################')
+        
+        tokenHeader = g.session_data['tokenHeader']
+        URL = "https://"+g.colecticahostname+"/api/v1/item" 
+        response = requests.post(URL, headers=tokenHeader, json=jsonitem, verify=False)
+        if response.ok:
+            return [response.status_code, response.json()]
+        else:
+            return [response.status_code, response.json()]
+
+
+
+        
+        
+

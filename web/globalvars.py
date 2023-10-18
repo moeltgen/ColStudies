@@ -9,7 +9,7 @@ import socket
 import menu
     
 appname = 'ColStudies'
-appversion = '0.2'
+appversion = '0.4'
 session_data = {}
 loggedin = False 
 status = ''
@@ -24,10 +24,24 @@ colecticapassword = settings.colecticapassword
 daraapi = settings.daraapi
 darausername = settings.darausername
 darapassword = settings.darapassword
+daradoiprefix = settings.daradoiprefix
+
+#settings for DBKEdit
+dbkediturl = settings.dbkediturl
+dbkeditusername = settings.dbkeditusername
+dbkeditpassword = settings.dbkeditpassword
+
+#settings for STAR File Storage
+starpath = settings.starpath 
 
 
 #classes 
 button = 'm-2 p-2 text-xl text-white bg-blue-500 hover:bg-blue-700 rounded-full ' #flex items-center'
+darabutton = 'm-2 p-2 text-xl text-white bg-yellow-500 hover:bg-yellow-700 rounded-full ' #flex items-center'
+dbkeditbutton = 'm-2 p-2 text-xl text-white bg-green-500 hover:bg-green-700 rounded-full ' #flex items-center'
+starbutton = 'm-2 p-2 text-xl text-white bg-gray-500 hover:bg-gray-700 rounded-full ' #flex items-center'
+actionbutton = 'm-2 p-2 text-xl text-white bg-red-500 hover:bg-red-700 rounded-full ' #flex items-center'
+annotationbutton = 'm-2 p-2 text-xl text-white bg-red-500 hover:bg-red-700 rounded-full ' #flex items-center'
 
 menuul = 'flex;'
 menuli = 'mr-3'
