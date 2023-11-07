@@ -8,18 +8,21 @@ import os
     
 def getFileList(studyno):
         """
+          
             get the files for a study from STAR
             no authentication required, local files or network drive
             
             parse result: 'we need: <id> <file> <SN> <size> <type> <datapubl> <publ>
+                
             
         """
         status_code = 0 #default  
         text = ""
         
         #todo: read files from star 
+        # access star: C:\Users\moeltgen\Documents\python\colstudies_github\STAR_Files\Inventar\ZA100nn\ZA10002\Service
         # parse result: 'we need: <id> <file> <SN> <size> <type> <datapubl> <publ>
-        #lines='44087;ZA0017_cdb.pdf;0017;118259;3;N;J; \r\n44088;ZA0017_cdb.pdf;0017;118259;3;N;J; \r\n'
+        lines='44087;ZA0017_cdb.pdf;0017;118259;3;N;J; \r\n44088;ZA0017_cdb.pdf;0017;118259;3;N;J; \r\n'
         
         lines=''
         count = 0 

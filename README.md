@@ -1,6 +1,10 @@
 # ColStudies
 ColStudies is a lightweight user interface to the  Colectica Repository API. You can see metadata for studies and register DOIs via da|ra. It uses justpy and python.
 
+# Version 0.5
+Sign in to DBKEdit if no Username/Password specified in settings. Prepare file and annotations functions.
+
+
 # Version 0.4
 Added functions to manage local Files (STAR folders) and send them to DBKEdit database (GESIS specific functions).
 

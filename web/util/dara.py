@@ -51,7 +51,10 @@ def get_daraxml_tree_fromddixml(ddixml, cvcoll, studyurl):
         xmlstring += footer()  
         
         tree = ET.ElementTree(ET.fromstring(xmlstring)) 
-        
+        #xmlRoot = tree.getroot()
+        #child = xml.Element("NewNode")
+        #xmlRoot.append(child)
+
     except Exception as e: 
         print('Error in ' + __file__)
         print('Error '+str(e))        
@@ -214,7 +217,25 @@ def register_dara(daraxmlfile, daraapi, username, password):
         else:
             #print('Error Status: ' + str(response.status_code) )
             returnmsg += ('Error Status: ' + str(response.status_code) +'\n')
-                
+        
+        """
+        #get <div id="msg_update"
+        pos = response.text.find('msg_update') #'<div id="msg_update"'
+        if pos>0: 
+            print('Error!\n' + response.text[pos:pos+800])
+        pos = response.text.find(' alert') 
+        if pos>0: 
+            print('Error!\n' + response.text[pos:pos+800])
+        else:
+            pos = response.text.find('alert-info') 
+            if pos>0: print('Error!\n' + response.text[pos:pos+800])
+        """
+
+        ##write to output file 
+        #f = open('daraapi_response', "w", encoding="utf-8")
+        #f.write(response.text)
+        #f.close()
+        
         #try to parse json response 
         try:
             isError=False

@@ -13,7 +13,9 @@ import series
 import studies
 import study
 import doiinfo 
+import fileinfo
 import starinfo
+import annotations
 
 
 
@@ -60,7 +62,9 @@ jp.Route('/series', series.series)
 
 jp.Route('/study/{agency}/{id}', study.study)
 jp.Route('/doiinfo/{agency}/{id}', doiinfo.doiinfo)
+jp.Route('/fileinfo/{agency}/{id}', fileinfo.fileinfo)
 jp.Route('/starinfo/{agency}/{id}', starinfo.starinfo)
+jp.Route('/annotations/{agency}/{id}', annotations.annotations)
 
 print("Warning: urllib3.disable_warnings() is set - communication is not encrypted!")
 

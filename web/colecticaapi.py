@@ -103,6 +103,180 @@ def get_an_item_version(AgencyId, Identifier, Version):
         else:
             return [response.status_code, '']
             
+#
+# Methods for updating, using the transaction api
+#
+
+def createTransaction():
+        """
+            This request creates a new transaction 
+            
+            https://docs.colectica.com/portal/technical/api/v1/#tag/Transaction
+            Request Type: POST            
+            URL: /api/v1/transaction/
+        """
+        tokenHeader = g.session_data['tokenHeader']
+        URL = "https://"+g.colecticahostname+"/api/v1/transaction/"
+                
+        response = requests.post(URL, headers=tokenHeader, verify=False)
+        if response.ok:
+            print(response.json())
+            
+            print(getTransactionValue(response.json(), 'TransactionId')) #start with capital letters here
+            print(getTransactionValue(response.json(), 'ItemCount'))
+            print(getTransactionValue(response.json(), 'PropagatedItemCount'))
+            
+            return [response.status_code, response.json()]
+        else:
+            print(response.json())
+            return [response.status_code, '']
+            
+        #transactionId
+
+def getTransactionValue(jsonResponse, itemname):
+    """
+        This returns the value for item from response, e.g. transactionId
+    """
+    itemvalue = ''
+
+    try: 
+        i = 0 
+        for item in jsonResponse:
+            if item==itemname:
+                itemvalue=jsonResponse[itemname]
+                #print(" - ", i, item, itemvalue)
+
+    except Exception as e: 
+            print('500', 'Error '+str(e))
+    
+    return itemvalue
+
+def addToTransaction(transactionId, agencyid, itemid, version, Item):
+    """
+        This request adds an item to a transaction 
+        
+        https://docs.colectica.com/api/v1/transaction/_addItemsToTransaction
+        Request Type: POST            
+        URL: /api/v1/transaction/
+    """
+    try: 
+        tokenHeader = g.session_data['tokenHeader']
+        URL = "https://"+g.colecticahostname+"/api/v1/transaction/_addItemsToTransaction/"
+        
+        StudyType="30ea0200-7121-4f01-8d21-a931a182b86d"
+        
+        
+        StringItem = ET.tostring(Item, encoding='unicode', method='xml')
+        #print(StringItem)
+        
+        JSONitem = {
+                    "itemType": StudyType,
+                    "agencyId": agencyid,
+                    "version": version+1,
+                    "identifier": itemid,
+                    "item": StringItem
+                    }
+        #print(JSONitem)
+        
+        jsonquery = {   "transactionId": transactionId,
+                        "items": [ JSONitem ]
+                    }
+        print(jsonquery)
+        
+        
+        response = requests.post(URL, headers=tokenHeader, json=jsonquery, verify=False)
+        if response.ok:
+            print(response.json())
+            return [response.status_code, response.json()]
+        else:
+            print(response.json())
+            return [response.status_code, '']
+    except Exception as e: 
+        print('500', 'Error '+str(e))
+
+            
+def commitTransaction(transactionId):
+        """
+            This request commits items in a transaction to the repository 
+            
+            https://docs.colectica.com/api/v1/transaction/_commitTransaction
+            Request Type: POST            
+            URL: /api/v1/transaction/_commitTransaction
+        """
+        tokenHeader = g.session_data['tokenHeader']
+        URL = "https://"+g.colecticahostname+"/api/v1/transaction/_commitTransaction/"
+        
+        jsonquery = {} #todo 
+        
+        response = requests.post(URL, headers=tokenHeader, json=jsonquery, verify=False)
+        if response.ok:
+            print(response.json())
+            return [response.status_code, response.json()]
+        else:
+            print(response.json())
+            return [response.status_code, '']
+
+
+def cancelTransaction(transactionId):
+        """
+            This request cancels a transaction with transactionId 
+            
+            https://docs.colectica.com/api/v1/transaction/_cancelTransaction
+            Request Type: POST            
+            URL: /api/v1/transaction/_cancelTransaction
+        """
+        tokenHeader = g.session_data['tokenHeader']
+        URL = "https://"+g.colecticahostname+"/api/v1/transaction/_cancelTransaction/"
+        
+        jsonquery = {"transactionId": transactionId}  
+        
+        response = requests.post(URL, headers=tokenHeader, json=jsonquery, verify=False)
+        if response.ok:
+            print(response.json())
+            return [response.status_code, response.json()]
+        else:
+            print(response.json())
+            return [response.status_code, '']
+
+
+def getTransactionInfo(transactionId):
+        """
+            This request gets info for a transaction with transactionId 
+            
+            https://docs.colectica.com/api/v1/transaction/_getTransactions
+            Request Type: POST            
+            URL: /api/v1/transaction/_getTransactions
+        """
+        tokenHeader = g.session_data['tokenHeader']
+        URL = "https://"+g.colecticahostname+"/api/v1/transaction/_getTransactions/"
+        
+        jsonquery = [ transactionId ]
+        
+        response = requests.post(URL, headers=tokenHeader, json=jsonquery, verify=False)
+        if response.ok:
+            TI = response.json()[0] #first item of array 
+            print(TI)
+            return [response.status_code, TI]
+        else:
+            print(response.json())
+            return [response.status_code, '']
+
+
+        
+
+
+       
+        
+        
+        
+        
+        
+#
+# Methods for updating, using item api 
+#
+
+#https://docs.colectica.com/api/v1/item/{agency}/{id}/{version}
+#        
 
 def set_an_item_version(jsonitem):
         """

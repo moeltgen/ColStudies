@@ -522,6 +522,46 @@ def getAccessClass(ddixml, lang):
             
     return AccessClass    
 
+def setAccessClass(ddixml, AccessClass):
+    """
+    Set new AccessClass for a study (all languages) and return the DDI xml 
+    """
+        
+    #root = remove_xml_ns(ddixml)
+    root = print_xml_ns(ddixml)
+    
+    
+    xml = '{http://www.w3.org/XML/1998/namespace}' #no xml: all namespaces were removed
+    
+    namespaces = {  'r': 'ddi:reusable:3_3',
+                    's': 'ddi:studyunit:3_3',
+                    'ddi': 'ddi:instance:3_3',
+                    'dct': 'http://purl.org/dc/terms/'                    }
+    
+    
+    
+    userids_all = root.findall('.//{s}StudyUnit/{r}Citation/{dct}accessRights', namespaces)
+    
+    for uid in userids_all:
+        uid.text = AccessClass
+        print("foudn in namespaces: accessRights")
+    
+    
+    namespaces2 = {  'ns2': 'ddi:reusable:3_3',
+                    'ns1': 'ddi:studyunit:3_3',
+                    'ns0': 'ddi:instance:3_3',
+                    'ns3': 'http://purl.org/dc/terms/'                    }
+    
+    #xmlns:="ddi:instance:3_3" xmlns:="ddi:studyunit:3_3" xmlns:="ddi:reusable:3_3" xmlns:="http://purl.org/dc/terms/"
+    
+    userids_all = root.findall('.//{ns1}StudyUnit/{ns2}Citation/{ns3}accessRights', namespaces2)
+    for uid in userids_all:
+        uid.text = AccessClass
+        print("foudn in namespaces2: accessRights")
+    
+    
+    return root    
+
 
 def buildCV(ddixml, xpath, Limit):
     """

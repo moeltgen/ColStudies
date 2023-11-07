@@ -17,6 +17,8 @@ def starinfo(request):
 
     
     def cell_valuechanged1(self, msg):
+        #print("cell_valuechanged1")
+        
         if msg.oldValue==True:
             mynewvalue = False 
         else:
@@ -25,7 +27,63 @@ def starinfo(request):
         grid2.options.rowData[msg.rowIndex]=msg.data
         
         
+    """
+    def cell_clicked1(self, msg):
+        print("cell_clicked1")
+        wp = msg.page
+        print("data:", msg.data)
+        print("column:", msg.column)
+        print("rowIndex:", msg.rowIndex)        
+        print("value:", msg.value)        
+        print("-")
+        
+    def row_updated1(self, msg):
+        print("row_updated1")
+        wp = msg.page
+        print("1")
+        print(msg.data)
+        print("e")
+        
+        
+    def row_selected1(self, msg):
+        print("row_selected1")
+        wp = msg.page
+        if msg.selected:
+            wp.selected_rows[msg.rowIndex] = msg.data
+        else:
+            wp.selected_rows.pop(msg.rowIndex)
+        s = f'Selected rows {sorted(list(wp.selected_rows.keys()))}'
+        for i in sorted(wp.selected_rows):
+            s = f'{s}\n Row {i}  Data: {wp.selected_rows[i]}'
+        if wp.selected_rows:
+            wp.rows_div.text = s
+        else:
+            wp.rows_div.text = 'No row selected'
+        
+    async def select_all_rows(self, msg):
+        await self.grid.run_api('selectAll()', msg.page)
+
+
+    async def deselect_rows(self, msg):
+        await self.grid.run_api('deselectAll()', msg.page)
+    """    
     
+    ### form 1
+    #xml form submitted
+    def submit_xmlform(self, msg):
+        print('Form submitted for checking files at Colectica')
+        result = ['000', ''] #todo #d.postFileList('0017')
+        if str(result[0])=='200':
+            print('Result: '+ str(result[1])) 
+            xmlstatus.text = str(result[1])
+        else:
+            print('Error: '+ str(result[0]))
+            xmlstatus.text = 'Error: '+ str(result[0]) + '\n' + str(result[1])        
+        
+        wp.page.update()
+    def reset_xmlform(self, msg):
+        xmlstatus.text = 'Sending...'
+        wp.page.update()
     
     #sendform submitted
     def submit_sendform(self, msg):
@@ -73,7 +131,18 @@ def starinfo(request):
     #sendform submitted
     def submit_sendform2(self, msg):
         print('Form submitted for sending files to DBKEdit', StudyNo)
+        """
+        filelist = []
+        for row in grid2.options.rowData:
+            row['dbk'] = ''
+            # File, StudyNo, Size, Type, Publ, DataPubl
+            fileinfo = {'File': row['file'], 'StudyNo': row['SN'], 'Size': row['size'], 'Type': row['type'], 'Publ': row['pub'], 'DataPubl': row['datapub']}
+            filelist.append(fileinfo)
         
+        print(filelist)
+        """
+        
+        #print(grid2.options.rowData)
         result = d.postFileList(StudyNo, grid2.options.rowData)
 
         if str(result[0])=='200':
@@ -87,8 +156,35 @@ def starinfo(request):
         
     def reset_sendform2(self, msg):
         xmlstatus.text = ''
-        wp.page.update()    
+        wp.page.update()  
+    
+    def submit_userform(self, msg):
+        print('submit_userform', 'set DBKEdit password and/or username')
+        myusername = ''        
+        #parse from data
+        for field in msg.form_data:
+            if field.type in ['text']:
+                myusername = field.value 
+                #print('myusername', myusername)
+            if field.type in ['password']:
+                mypassword = field.value
+                #print('mypassword', mypassword)        
+        
+        if g.dbkeditusername=='' and not myusername=='':
+            g.dbkeditusername=myusername
 
+        if g.dbkeditpassword=='' and not mypassword=='':
+            g.dbkeditpassword=mypassword
+            
+        #msg.style='display:none;'
+        #loginform.classes='hidden'
+        msg.page.redirect = '/starinfo/' + agency + '/' + Id
+        
+    
+    def reset_userform(self, msg):
+        xmlstatus.text = ''
+        wp.page.update()  
+    
     
     #start page     
     wp = g.templatewp()
@@ -126,6 +222,7 @@ def starinfo(request):
                     studybutton.text = "Study " + StudyNo
                 
                 
+                # access star: C:\Users\moeltgen\Documents\python\colstudies_github\STAR_Files\Inventar\ZA100nn\ZA10002\Service
                 # parse result: 'we need: <id> <file> <SN> <size> <type> <datapub> <pub>
                 result = st.getFileList(StudyNo) 
                 
@@ -145,8 +242,48 @@ def starinfo(request):
                 
                 #add the data to grid2 
                 AddGridRows(grid2, agency, Id, Version, result)
+                
+                #add the update methods to grid2
+                #grid2.on('rowDataUpdated', row_updated1)
+                #grid2.on('cellClicked', cell_clicked1)
                 grid2.on('cellValueChanged', cell_valuechanged1)
                 
+                #refreshCells
+                #cellClicked
+                
+                
+                """
+                #test 
+                wp.selected_rows = {}  # Dictionary holding selected rows
+                
+                grid2.options.columnDefs[0].checkboxSelection = True
+                grid2.on('rowSelected', row_selected1)
+                wp.rows_div = jp.Pre(text='Data will go here when you select rows', classes='border text-lg', a=wp)
+                btn_deselect = jp.Button(text='Deselect rows', classes=jp.Styles.button_simple+' m-2', a=wp, click=deselect_rows)
+                btn_deselect.grid = grid2
+                btn_select_all = jp.Button(text='Select all rows', classes=jp.Styles.button_simple+' m-2', a=wp, click=select_all_rows)
+                btn_select_all.grid = grid2
+                """
+                
+                
+                """
+                todo Colectica functions:
+                
+                buttonsdiv = jp.Div(text='', a=wp, classes=g.menuul, style='display: flex;')
+                
+                #Form to check  
+                xmlform = jp.Form(a=buttonsdiv, classes='border m-1 p-1')
+                xmlformsubmit_button = jp.Input(value='Check if files are in Colectica', type='submit', a=xmlform, classes=g.starbutton)
+                xmlform.on('submit', submit_xmlform)
+                xmlform.on('click', reset_xmlform)
+                
+                #Form to send  
+                sendform = jp.Form(a=buttonsdiv, classes='border m-1 p-1')
+                sendformsubmit_button = jp.Input(value='Send these files to Colectica', type='submit', a=sendform, classes=g.starbutton)
+                sendform.on('submit', submit_sendform)
+                sendform.on('click', reset_sendform)
+                
+                """
                 
                 #Info 
                 infodiv = jp.Div(text='', a=wp)
@@ -168,6 +305,21 @@ def starinfo(request):
                 sendform2.on('submit', submit_sendform2)
                 sendform2.on('click', reset_sendform2)
                 
+                #if DBKEdit login information not specified, do it here
+                if g.dbkeditusername=='' or g.dbkeditpassword=='':
+                    userform = jp.Form(a=buttonsdiv2, classes='border m-1 p-1 w-64')
+                    Formtitle = jp.P(text='DBKEdit Login', a=userform)
+                    if g.dbkeditusername=='':
+                        user_label = jp.Label(text='User', classes='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2', a=userform)
+                        usern = jp.Input(placeholder='User', a=user_label, classes='form-input')
+                        user_label.for_component = usern
+                    if g.dbkeditpassword=='':
+                        userpw_label = jp.Label(text='Password', classes='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2', a=userform)
+                        userpw = jp.Input(placeholder='Password', a=userpw_label, classes='form-input', type='password')
+                        userpw_label.for_component = userpw
+                    submit_button = jp.Input(value='submit', type='submit', a=userform, classes=g.starbutton)
+                    userform.on('submit', submit_userform)
+                    
                 
             else:
                 print('Error get_an_item, status ' + str(result[0]))
@@ -328,7 +480,14 @@ def GetGridOptions():
           rowData: []
     }
     """
-
+    ## todo later:
+    ## {headerName: "CheckColectica", field: "col", width: 10},
+    ##
+    
+    # , cellRenderer: 'checkboxRenderer', editable: false
+    # , cellRenderer: 'agCheckboxCellRenderer', editable: true
+    # , cellRenderer: 'agCheckboxCellRenderer', editable: true, cellEditor: 'agCheckboxCellEditor'
+    # 
     return grid_options
     
 

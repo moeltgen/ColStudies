@@ -18,6 +18,105 @@ def study(request):
     
     try: 
     
+        def setAccessClass(AgencyId, Identifier, newAccessClass):
+            try:
+                newxml = ''
+                result = c.get_an_item(AgencyId, Identifier)
+                if str(result[0])=='200':
+                    
+                    myddixml = {}
+                    if result[1]['Item'] is not None:
+                        myddixml[Id]=result[1]['Item']
+                        
+                        Version=result[1]['Version']
+                        
+                        AccessClass = ed.getAccessClass(myddixml[Id], 'en')
+                        if AccessClass=='':
+                            AccessClass = ed.getAccessClass(myddixml[Id], 'en')
+                        print('Old AccessClass: ' + AccessClass)
+                        print('New AccessClass: ' + newAccessClass)
+                        
+                        newxml=ed.setAccessClass(myddixml[Id], newAccessClass) #change it in all languages
+                
+                
+                #get transactionId
+                #creT = c.createTransaction()
+                #TransactionId = c.getTransactionValue(creT[1], 'TransactionId')
+                
+                TransactionId = 252
+                
+                addT = c.addToTransaction(TransactionId, AgencyId, Identifier, Version, newxml)
+                
+                
+                print(addT)
+                
+                
+                
+                if newxml=='':
+                    return ['500', 'Error '+result[0]]
+                else:
+                    return ['200', ET.tostring(newxml, encoding="unicode")]
+            except Exception as e: 
+                return ['500', 'Error '+str(e)]
+                
+        #cancel submitted
+        def submit_cancel(self, msg):
+            print('Form submitted for cancel')
+            
+            transactionId=250
+            result = c.cancelTransaction(transactionId)
+            
+            if str(result[0])=='200':
+                print('Result: '+ str(result[1])) 
+                xmlstatus.text = str(result[1])
+            else:
+                print('Error: '+ str(result[0]))
+                xmlstatus.text = 'Error: '+ str(result[0]) + '\n' + str(result[1])        
+            
+            wp.page.update()   
+            
+        
+        #info submitted
+        def submit_info(self, msg):
+            print('Form submitted for info')
+            
+            transactionId=249
+            result = c.getTransactionInfo(transactionId)
+            
+            if str(result[0])=='200':
+                #print('Result: '+ str(result[1])) 
+                xmlstatus.text = str(result[1])
+                
+                print(c.getTransactionValue(result[1], 'TransactionId'), 'TransactionId')
+                print(c.getTransactionValue(result[1], 'ItemCount'), 'ItemCount')
+                print(c.getTransactionValue(result[1], 'PropagatedItemCount'), 'PropagatedItemCount')
+                print(c.getTransactionValue(result[1], 'Status'), 'Status')
+                
+                
+            else:
+                print('Error: '+ str(result[0]))
+                xmlstatus.text = 'Error: '+ str(result[0]) + '\n' + str(result[1])        
+            
+            wp.page.update()   
+        
+        
+        #sendform submitted
+        def submit_sendform(self, msg):
+            print('Form submitted for test0')
+            result = setAccessClass(agency, Id, '0')
+            if str(result[0])=='200':
+                #print('Result: '+ str(result[1])) 
+                xmlstatus.text = str(result[1])
+            else:
+                print('Error: '+ str(result[0]))
+                xmlstatus.text = 'Error: '+ str(result[0]) + '\n' + str(result[1])        
+            
+            wp.page.update()
+            
+            
+        def reset_sendform(self, msg):
+            xmlstatus.text = 'Sending...'
+            wp.page.update()
             
         #start page     
             
@@ -65,6 +164,34 @@ def study(request):
                     jp.A(text='DOI Info', href='/doiinfo/' + agency + '/' + Id, a=buttonsdiv, classes=g.darabutton)
                     
                     jp.A(text='STAR Info', href='/starinfo/' + agency + '/' + Id, a=buttonsdiv, classes=g.starbutton)
+                    
+                    jp.A(text='File Info', href='/fileinfo/' + agency + '/' + Id, a=buttonsdiv, classes=g.dbkeditbutton)
+                    
+                    jp.A(text='Annotations', href='/annotations/' + agency + '/' + Id, a=buttonsdiv, classes=g.annotationbutton)
+                    
+                    """
+                    #disabled, does not yet work
+                    
+                    #Form to send  
+                    sendform = jp.Form(a=buttonsdiv, classes='border m-1 p-1')
+                    sendformsubmit_button = jp.Input(value='Test: set AccessClass to 0', type='submit', a=sendform, classes=g.actionbutton)
+                    sendform.on('submit', submit_sendform)
+                    sendform.on('click', reset_sendform)
+                    
+                    #Form to send  
+                    cancel = jp.Form(a=buttonsdiv, classes='border m-1 p-1')
+                    cancelsubmit_button = jp.Input(value='Test: cancel transaction', type='submit', a=cancel, classes=g.actionbutton)
+                    cancel.on('submit', submit_cancel)
+                    
+                    #Form to send  
+                    info = jp.Form(a=buttonsdiv, classes='border m-1 p-1')
+                    infosubmit_button = jp.Input(value='Test: info transaction', type='submit', a=info, classes=g.actionbutton)
+                    info.on('submit', submit_info)
+                    
+                    #status 0 = created, 3 = canceled
+                    """
+                    
+                    
                     
                     
                     infodiv = jp.Div(text='', a=wp)
