@@ -2,7 +2,6 @@
     colstudies application
 """
 
-import json
 import justpy as jp
 import globalvars as g
 
@@ -10,7 +9,6 @@ import colecticaapi as c
 import dbkeditapi as d
 import starapi as st
 import util.edxml as ed
-import util.dara as dara
 import os
 
 

@@ -2,7 +2,6 @@
     colstudies application
 """
 
-import json
 import globalvars as g
 import xml.etree.ElementTree as ET
 import requests

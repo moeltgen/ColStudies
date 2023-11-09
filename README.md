@@ -37,3 +37,6 @@ https://github.com/CLOSER-Cohorts/colectica-api
 License: MIT License
 
 Copyright (c) 2023 Wolfgang Zenk-Möltgen, GESIS
+
+
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)

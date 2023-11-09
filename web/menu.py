@@ -2,7 +2,6 @@
     colstudies application
 """
 
-import json
 import justpy as jp
 import globalvars as g
 

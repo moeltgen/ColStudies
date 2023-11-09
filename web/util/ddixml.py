@@ -2,9 +2,6 @@
     functions to parse ddixml
 """
 
-from io import StringIO
-import xml.etree.ElementTree as ET
-import json
 import util.edxml as ed
 
 ############# study object #############
@@ -285,7 +282,7 @@ def ddixml_to_study(ddixml, cvcollection, studyurl):
 
     # extension:InstrumentReferences within DataCollection
     ref = ed.get_referenceFromAttributePair(ddixml, ".//DataCollection")
-    if not ref is None:
+    if ref is not None:
         study["InstrumentID"] = ref["ID"]
 
     # More study information from List of CVs
@@ -661,7 +658,7 @@ def getCountOfElements(node, xpath):
 
     userids_all = node.findall(xpath)
     count = 0
-    if not userids_all is None:
+    if userids_all is not None:
         count = len(userids_all)
 
     return count
@@ -729,7 +726,6 @@ def getCVTerms(node, xpath, useGerman, cvcollitem):
 
 def ddixml_to_var(ddixml, Limit, vagency="", vid="", vversion=""):
     # import edindex as ed
-    import ast
 
     """
     ###########################################
@@ -780,7 +776,7 @@ def ddixml_to_var(ddixml, Limit, vagency="", vid="", vversion=""):
             )
             xpath = ".//Variable" + URNCondition
             variablenode = root.find(xpath)
-            if not variablenode is None:
+            if variablenode is not None:
                 # Create a new variable object: just an empty object or defined variable with getnewvariable()
                 variable = {}
                 # variable = getnewvariable()
@@ -842,7 +838,7 @@ def ddixml_to_var(ddixml, Limit, vagency="", vid="", vversion=""):
                     + "/VariableRepresentation/CodeRepresentation/CodeListReference"
                 )
                 ref = ed.get_reference(ddixml, xpath)
-                if not ref is None:
+                if ref is not None:
                     # Select this CodeListReference
                     variable["Values"] = getVarValuesList(
                         ddixml, ref["Agency"], ref["ID"], ref["Version"]

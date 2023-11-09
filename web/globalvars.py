@@ -2,7 +2,6 @@
     colstudies application
 """
 
-import json
 import justpy as jp
 import settings  # api settings and login data stored in file settings.py
 import socket

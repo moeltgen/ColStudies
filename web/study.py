@@ -2,15 +2,12 @@
     colstudies application
 """
 
-import json
 import justpy as jp
 import globalvars as g
 import traceback
 import colecticaapi as c
 import util.edxml as ed
-import util.dara as dara
 import xml.etree.ElementTree as ET
-import os
 
 
 def study(request):

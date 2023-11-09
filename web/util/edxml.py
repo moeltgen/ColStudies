@@ -191,7 +191,7 @@ def getAttributeValueFromXPath(node, xpath, attribute):
     # get a single attribute value for given xpath with attribute
     userids_all = node.findall(xpath)
     for uid in userids_all:
-        if not uid.attrib[attribute] is None:
+        if uid.attrib[attribute] is not None:
             return uid.attrib[attribute]
     return ""  # default empty
 
@@ -749,7 +749,7 @@ def print_xml_ns(xml):
     for _, el in it:
         prefix, has_namespace, postfix = el.tag.partition("}")
         if has_namespace:
-            if not prefix in nslist:
+            if prefix not in nslist:
                 nslist.append(prefix)
             # el.tag = postfix  # strip all namespaces
 

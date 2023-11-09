@@ -3,7 +3,6 @@
 """
 import io
 import xml.etree.ElementTree as ET
-import json
 import globalvars as g
 import traceback
 import requests
