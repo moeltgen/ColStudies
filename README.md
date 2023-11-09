@@ -38,6 +38,12 @@ ColStudies uses JustPy and Python 3
 
 Install Python dependencies with `python -m pip install -r requirements.txt`
 
+Pin and upgrade dependencies with
+
+```
+python -m pip install pip-tools
+python -m piptools compile --upgrade --extra dev --allow-unsafe --generate-hashes pyproject.toml
+```
 
 ## License
 
