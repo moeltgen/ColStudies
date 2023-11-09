@@ -1,0 +1,28 @@
+[project]
+name = "ColStudies"
+version = "0.5"
+description = "A  lightweight user interface to the Colectica Repository API"
+maintainers = [{ name = "Wolfgang Zenk-Möltgen" }]
+license = { text = "MIT License" }
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  # Add Python package dependencies here
+  "justpy",  # simple WebUI
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff",      # Python package dependency management
+  "pip-tools"  # Python code formatter, linter, style checker
+]
+
+[project.urls]
+Repository = "https://github.com/moeltgen/ColStudies.git"
+
+# specify build system to run pip-tools
+# (application is not a package and no build is needed)
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
