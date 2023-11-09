@@ -1,7 +1,7 @@
 [project]
 name = "ColStudies"
 version = "0.5"
-description = "A  lightweight user interface to the Colectica Repository API"
+description = "A lightweight user interface to the Colectica Repository API"
 maintainers = [{ name = "Wolfgang Zenk-Möltgen" }]
 license = { text = "MIT License" }
 readme = "README.md"
