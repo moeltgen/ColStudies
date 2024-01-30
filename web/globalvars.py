@@ -12,7 +12,7 @@ appversion = "0.5"
 session_data = {}
 loggedin = False
 status = ""
-colecticahosthoststatus = ""
+colecticahosthoststatus = "" 
 
 # settings
 colecticahostname = settings.colecticahostname
