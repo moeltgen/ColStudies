@@ -8,11 +8,14 @@ import socket
 import menu
 
 appname = "ColStudies"
-appversion = "0.5"
+appversion = "0.6"
 session_data = {}
 loggedin = False
 status = ""
 colecticahosthoststatus = "" 
+dbkloggedin = False
+dbkstatus = ""
+
 
 # settings
 colecticahostname = settings.colecticahostname
@@ -49,7 +52,7 @@ menua = "inline-block border border-blue-500 rounded py-1 px-3 bg-blue-500 text-
 
 def templatewp():
     wp = jp.WebPage()
-    wp.title = appname
+    wp.title = appname + " " + appversion
     wp.favicon = "favicon.ico"
     wp.css = "body { font-family: sans-serif; background-color: rgb(219,234,254); margin: 10px; padding: 5px; }"
 

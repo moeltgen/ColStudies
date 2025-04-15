@@ -7,38 +7,6 @@ import globalvars as g
 import requests
 
 
-def get_jwtToken(hostname, username, password):
-    """
-    todo
-
-    """
-
-    import urllib3
-
-    urllib3.disable_warnings()
-
-    tokenEndpoint = "https://" + hostname + "/token/createtoken"
-    response = requests.post(
-        tokenEndpoint,
-        json={"username": username, "password": password},
-        allow_redirects=True,
-        verify=False,
-    )
-
-    if response.ok is not True:
-        print("Could not get token. Status code: ", response.status_code)
-        tokenHeader = ""
-        return tokenHeader
-
-    jsonResponse = response.json()
-    jwtToken = jsonResponse["access_token"]
-    tokenHeader = {"Authorization": "Bearer " + jwtToken}
-
-    # get Repository information
-    # response = requests.get("https://"+self.host+"/api/v1/repository/info", headers=tokenHeader, verify=False)
-    return tokenHeader
-
-
 def getFileList(studyno):
     """
 
@@ -74,6 +42,10 @@ def postFileList(studyno, filelist):
     URL: https://svko-dbk-test03.gesis.intra/dbkedit/getFileList.asp?study=0017&format=txt
     """
 
+    import urllib3
+
+    urllib3.disable_warnings()
+    
     dbkeditheaders = {"Content-Type": "application/xml;charset=UTF-8"}
 
     URL = g.dbkediturl + "postFileList.asp"
@@ -89,10 +61,61 @@ def postFileList(studyno, filelist):
         verify=False,
     )
     if response.ok:
-        # print(response.text)
+        #print(response.text)
         return [response.status_code, response.text]
     else:
-        # print(response.text)
+        #print(response.text)
         return [response.status_code, response.text]
 
     print(response)
+
+def LoginTest(username, password):
+    """
+
+    Test the login by using the postFileList page at DBKEdit
+    
+    Request Type: POST
+    
+    """
+
+    import urllib3
+
+    urllib3.disable_warnings()
+
+    #create empty filelist 
+    filelist = []
+    fileinfo = {
+                    "id": "(0)",
+                    "file": 'nn',
+                    "SN": 'ZA0000',
+                    "size": '0',
+                    "dbksize": '0',
+                    "type": '0',
+                    "dbktype": '0',
+                    "pub": False,
+                    "datapub": False,
+                    "col": '',
+                    "dbk": '',
+                    "commentde": '',
+                    "commenten": '',
+                }
+    filelist.append(fileinfo)                    
+
+    dbkeditheaders = {"Content-Type": "application/xml;charset=UTF-8"}
+
+    URL = g.dbkediturl + "postFileList.asp"
+    
+    response = requests.post(
+        URL,
+        headers=dbkeditheaders,
+        auth=(username, password),
+        json=filelist,
+        verify=False,
+    )
+    if response.status_code==200:
+        # print("SUCCESS")
+        return ["1","SUCCESS"]
+    else:
+        # print("FAILED")   
+        print(response)
+        return ["0","FAILED"]

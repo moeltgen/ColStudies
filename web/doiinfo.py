@@ -93,7 +93,7 @@ def doiinfo(request):
                     grid2 = jp.AgGrid(
                         a=wp,
                         options=grid_options,
-                        style="height: 150px;width: 800px;margin: 0.1em;",
+                        style="height: 150px;width:1500px;margin: 0.1em;",
                     )  # style='height: 200px; width: 300px; margin: 0.25em'
                     grid2.html_columns = [1, 2]
                     AddGridRows(grid2, agency, Id, Version, result)
@@ -151,7 +151,7 @@ def doiinfo(request):
                         )
                     )
         else:
-            wp.add(jp.P(text="You are not logged in.", classes="m-2"))
+            wp.add(jp.P(text="You are not logged in to Colectica.", classes="m-2"))
 
     except Exception as e:
         print("Error in " + __file__)

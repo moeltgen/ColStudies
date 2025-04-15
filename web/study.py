@@ -145,9 +145,13 @@ def study(request):
             grid = jp.AgGrid(
                 a=wp,
                 options=grid_options,
-                style="height: 320px;width: 800px;margin: 0.1em;",
+                style="height: 320px;width:1500px;margin: 0.1em;",
             )  # style='height: 200px; width: 300px; margin: 0.25em'
             grid.html_columns = [1, 2]
+
+            grid.options.columnDefs[1].cellClass = ["w-96"]  # width .w-56	width: 14rem;
+            
+            
             if True:
                 # agency = item['AgencyId']
                 # Id = item['Identifier']
@@ -242,7 +246,7 @@ def study(request):
                     )
 
         else:
-            wp.add(jp.P(text="You are not logged in.", classes="m-2"))
+            wp.add(jp.P(text="You are not logged in to Colectica.", classes="m-2"))
 
     except Exception as e:
         print("Error in " + __file__)
@@ -257,14 +261,20 @@ def AddGridRows(grid, agency, Id, Version, result):
 
     try:
         myddixml = {}
-
+        
+        StudyDOI=""
+        StudyVersion=""
+        
         if result[1]["Item"] is not None:
             myddixml[Id] = result[1]["Item"]
             # print(myddixml[Id]) #contains Fragment with StudyUnit
 
             StudyNo = ed.getStudyNo(myddixml[Id])
-            # use Dataset: StudyDOI=ed.getStudyDOI(myddixml[Id])
-            # use Dataset: StudyVersion=ed.getStudyVersion(myddixml[Id])
+            # use Dataset: 
+            StudyDOI=ed.getStudyDOI(myddixml[Id])
+            # use Dataset: 
+            StudyVersion=ed.getStudyVersion(myddixml[Id])
+            
             Version = ed.getVersion(myddixml[Id])
             # print(StudyNo, StudyVersion, StudyDOI)
 
@@ -313,11 +323,14 @@ def AddGridRows(grid, agency, Id, Version, result):
                     classes="m-2",
                 )
             )
-
-        StudyDOI = "https://doi.org/" + StudyDOI
-
+            
+        if not StudyDOI == "":
+            StudyDOI = "https://doi.org/" + StudyDOI
+        
+        StudyDOILink=""
         if not StudyDOI == "":
             StudyDOILink = "<a href=" + StudyDOI + ">" + StudyDOI + "</a>"
+        StudyURLLink=""
         if not StudyURL == "":
             StudyURLLink = "<a href=" + StudyURL + ">" + StudyURL + "</a>"
 
@@ -359,13 +372,21 @@ def AddGridRows(grid, agency, Id, Version, result):
 
 
 def GetGridOptions():
+    
+    # https://justpy.io/grids_tutorial/creating_grids/
+    # wrapText and autoHeight don't work
+    
     grid_options = """
     {
         defaultColDef: {
             filter: true,
             sortable: true,
             resizable: true,
-            cellStyle: {textAlign: 'left'},
+            wrapText: true,
+            autoHeight: true,
+            wrapHeaderText: true,
+            autoHeaderHeight: true,
+            cellStyle: {textAlign: 'left', wrapText: true, autoHeight: true},
             headerClass: 'font-bold'
         }, 
           columnDefs: [

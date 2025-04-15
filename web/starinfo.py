@@ -23,46 +23,6 @@ def starinfo(request):
         # server side data update:
         grid2.options.rowData[msg.rowIndex] = msg.data
 
-    """
-    def cell_clicked1(self, msg):
-        print("cell_clicked1")
-        wp = msg.page
-        print("data:", msg.data)
-        print("column:", msg.column)
-        print("rowIndex:", msg.rowIndex)        
-        print("value:", msg.value)        
-        print("-")
-        
-    def row_updated1(self, msg):
-        print("row_updated1")
-        wp = msg.page
-        print("1")
-        print(msg.data)
-        print("e")
-        
-        
-    def row_selected1(self, msg):
-        print("row_selected1")
-        wp = msg.page
-        if msg.selected:
-            wp.selected_rows[msg.rowIndex] = msg.data
-        else:
-            wp.selected_rows.pop(msg.rowIndex)
-        s = f'Selected rows {sorted(list(wp.selected_rows.keys()))}'
-        for i in sorted(wp.selected_rows):
-            s = f'{s}\n Row {i}  Data: {wp.selected_rows[i]}'
-        if wp.selected_rows:
-            wp.rows_div.text = s
-        else:
-            wp.rows_div.text = 'No row selected'
-        
-    async def select_all_rows(self, msg):
-        await self.grid.run_api('selectAll()', msg.page)
-
-
-    async def deselect_rows(self, msg):
-        await self.grid.run_api('deselectAll()', msg.page)
-    """
 
     ### form 1
     # xml form submitted
@@ -127,26 +87,49 @@ def starinfo(request):
             row["dbk"] = ""
         wp.page.update()
 
+    # setform submitted
+    def submit_setform2(self, msg):
+        print("Set DBKType = Type ", StudyNo)
+        
+        filelist = grid2.options.rowData
+        
+        for fileinfo in filelist:
+            fileinfo["dbktype"] = fileinfo["type"]
+        
+        #print(filelist)
+        if True:
+            grid2.options.rowData = filelist 
+            xmlstatus.text = str("DBKType = Type")
+        
+        
+        wp.page.update()
+
+    def reset_setform2(self, msg):
+        xmlstatus.text = ""
+        wp.page.update()
+
+    
     # sendform submitted
     def submit_sendform2(self, msg):
         print("Form submitted for sending files to DBKEdit", StudyNo)
-        """
-        filelist = []
-        for row in grid2.options.rowData:
-            row['dbk'] = ''
-            # File, StudyNo, Size, Type, Publ, DataPubl
-            fileinfo = {'File': row['file'], 'StudyNo': row['SN'], 'Size': row['size'], 'Type': row['type'], 'Publ': row['pub'], 'DataPubl': row['datapub']}
-            filelist.append(fileinfo)
-        
-        print(filelist)
-        """
 
-        # print(grid2.options.rowData)
-        result = d.postFileList(StudyNo, grid2.options.rowData)
+        
+        filelist = grid2.options.rowData
+        #print(filelist)
+        
+        result = d.postFileList(StudyNo, filelist)
+        
+        
+        
 
         if str(result[0]) == "200":
             print("Result: " + str(result[1]))
             xmlstatus.text = str(result[1])
+        
+        elif str(result[0]) == "401":
+            print("Error: " + str(result[0]))
+            xmlstatus.text = "Error: " + str(result[0]) + " - Not authorized: You are not logged in to DBKEdit \n" + str(result[1])
+        
         else:
             print("Error: " + str(result[0]))
             xmlstatus.text = "Error: " + str(result[0]) + "\n" + str(result[1])
@@ -157,31 +140,6 @@ def starinfo(request):
         xmlstatus.text = ""
         wp.page.update()
 
-    def submit_userform(self, msg):
-        print("submit_userform", "set DBKEdit password and/or username")
-        myusername = ""
-        # parse from data
-        for field in msg.form_data:
-            if field.type in ["text"]:
-                myusername = field.value
-                # print('myusername', myusername)
-            if field.type in ["password"]:
-                mypassword = field.value
-                # print('mypassword', mypassword)
-
-        if g.dbkeditusername == "" and not myusername == "":
-            g.dbkeditusername = myusername
-
-        if g.dbkeditpassword == "" and not mypassword == "":
-            g.dbkeditpassword = mypassword
-
-        # msg.style='display:none;'
-        # loginform.classes='hidden'
-        msg.page.redirect = "/starinfo/" + agency + "/" + Id
-
-    def reset_userform(self, msg):
-        xmlstatus.text = ""
-        wp.page.update()
 
     # start page
     wp = g.templatewp()
@@ -211,7 +169,15 @@ def starinfo(request):
                 classes="m-2",
             )
         )
-
+        
+        wp.add(
+            jp.Div(text="STAR Information", style="background-color: papayawhip; width: 300px;", classes="text-right")
+            )
+        wp.add(
+            jp.Div(text="DBKEdit Information (editable) ", style="background-color: darkseagreen; width: 300px;", classes="text-right")
+            )
+            
+        
         # create table grid for study files
         if True:
             # agency = item['AgencyId']
@@ -237,8 +203,14 @@ def starinfo(request):
                 # access star: C:\Users\moeltgen\Documents\python\colstudies_github\STAR_Files\Inventar\ZA100nn\ZA10002\Service
                 # parse result: 'we need: <id> <file> <SN> <size> <type> <datapub> <pub>
                 result = st.getFileList(StudyNo)
-
-                studynodir = StudyNo[0:5] + "nn"
+                
+                if len(StudyNo)==7:
+                    studynodir = StudyNo[0:5] + "nn" #Länge 5 
+                elif len(StudyNo)==6:
+                    studynodir = StudyNo[0:4] + "nn" #Länge 4
+                else:
+                    studynodir = StudyNo #nicht vorgesehen
+                        
                 filepath = os.path.join(
                     g.starpath, studynodir, StudyNo, "Service"
                 )  # Service folder for study
@@ -260,7 +232,7 @@ def starinfo(request):
                 grid2 = jp.AgGrid(
                     a=wp,
                     options=grid_options,
-                    style="height: 320px;width: 1100px;margin: 0.1em;",
+                    style="height: 600px;width:1500px;margin: 0.1em;",
                 )  # style='height: 200px; width: 300px; margin: 0.25em'
 
                 # add the data to grid2
@@ -327,6 +299,17 @@ def starinfo(request):
                 xmlform2.on("submit", submit_xmlform2)
                 xmlform2.on("click", reset_xmlform2)
 
+                # Form to set DBKtype 
+                setform2 = jp.Form(a=buttonsdiv2, classes="border m-1 p-1")
+                setform2submit_button = jp.Input(
+                    value="Set DBKType to value of Type",
+                    type="submit",
+                    a=setform2,
+                    classes=g.starbutton,
+                )
+                setform2.on("submit", submit_setform2)
+                setform2.on("click", reset_setform2)
+                
                 # Form to send
                 sendform2 = jp.Form(a=buttonsdiv2, classes="border m-1 p-1")
                 sendform2submit_button = jp.Input(
@@ -338,37 +321,6 @@ def starinfo(request):
                 sendform2.on("submit", submit_sendform2)
                 sendform2.on("click", reset_sendform2)
 
-                # if DBKEdit login information not specified, do it here
-                if g.dbkeditusername == "" or g.dbkeditpassword == "":
-                    userform = jp.Form(a=buttonsdiv2, classes="border m-1 p-1 w-64")
-                    Formtitle = jp.P(text="DBKEdit Login", a=userform)
-                    if g.dbkeditusername == "":
-                        user_label = jp.Label(
-                            text="User",
-                            classes="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2",
-                            a=userform,
-                        )
-                        usern = jp.Input(
-                            placeholder="User", a=user_label, classes="form-input"
-                        )
-                        user_label.for_component = usern
-                    if g.dbkeditpassword == "":
-                        userpw_label = jp.Label(
-                            text="Password",
-                            classes="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2",
-                            a=userform,
-                        )
-                        userpw = jp.Input(
-                            placeholder="Password",
-                            a=userpw_label,
-                            classes="form-input",
-                            type="password",
-                        )
-                        userpw_label.for_component = userpw
-                    submit_button = jp.Input(
-                        value="submit", type="submit", a=userform, classes=g.starbutton
-                    )
-                    userform.on("submit", submit_userform)
 
             else:
                 print("Error get_an_item, status " + str(result[0]))
@@ -378,7 +330,10 @@ def starinfo(request):
                         classes="m-2",
                     )
                 )
-
+        wp.add(
+            jp.Div(text="Document Types")
+            )
+        
     return wp
 
 
@@ -407,13 +362,17 @@ def AddGridRows(grid, agency, Id, Version, result):
                 datapub = False
                 col = ""
                 dbk = ""
-
+                
+                typname=getDocTypeEN(int(typ))
+                
                 row = {
                     "id": FileId,
                     "file": file,
                     "SN": SN,
                     "size": size,
-                    "type": typ,
+                    "dbksize": "",              
+                    "type": typname,
+                    "dbktype": "",              
                     "pub": pub,
                     "datapub": datapub,
                     "col": col,
@@ -441,7 +400,7 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
                 jp.P(text="Error getFileList, status " + str(result[0]), classes="m-2")
             )
         if str(result[0]) == "200":
-            print(result[1])  # parse result[1]
+            #print(result[1])  # parse result[1]
             filedata = result[1]
             filedatarecords = filedata.split("\r\n")
             for line in filedatarecords:
@@ -459,15 +418,28 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
                     typ = linedata[4]
                     datapub = linedata[5]
                     pub = linedata[6]
+                    commentde = linedata[7]
+                    commenten = linedata[8]
+                    
+                    commentde = commentde.strip('\"')
+                    commenten = commenten.strip('\"')
+                    
+                    
                     # print(file, datapub)
                     fileinfo = {}
                     fileinfo["id"] = FileId
                     fileinfo["file"] = file
                     fileinfo["SN"] = SN
-                    fileinfo["size"] = size
-                    fileinfo["type"] = typ
+                    fileinfo["dbksize"] = size
+                    
+                    typname = getDocTypeEN(int(typ))
+                    fileinfo["dbktype"] = typname 
+                    
                     fileinfo["pub"] = pub
                     fileinfo["datapub"] = datapub
+                    
+                    fileinfo["commentde"] = commentde
+                    fileinfo["commenten"] = commenten
 
                     dbkfile[file] = fileinfo
 
@@ -483,7 +455,10 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
                 newValue = "FOUND"
                 # set new values
                 row["id"] = dbkfile[filetocheck]["id"]
-                row["size"] = dbkfile[filetocheck]["size"]
+                row["dbksize"] = dbkfile[filetocheck]["dbksize"]
+                
+                row["dbktype"] = dbkfile[filetocheck]["dbktype"]  #todo:  get label from value 
+                
                 if dbkfile[filetocheck]["pub"] == "J":
                     row["pub"] = True
                 else:
@@ -492,7 +467,10 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
                     row["datapub"] = True
                 else:
                     row["datapub"] = False
-
+                row["commentde"] = dbkfile[filetocheck]["commentde"]                                                
+                row["commenten"] = dbkfile[filetocheck]["commenten"]                                                
+                
+                
             else:
                 # print('not found')
                 newValue = "NOTFOUND"
@@ -511,6 +489,27 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
 
 def GetGridOptions():
     #'we need: <id> <file> <SN> <size> <type>
+    
+    typelist = ""
+    typelist += "'" + getDocTypeEN(1) + "',"
+    typelist += "'" + getDocTypeEN(2) + "',"
+    typelist += "'" + getDocTypeEN(3) + "',"
+    typelist += "'" + getDocTypeEN(4) + "',"
+    typelist += "'" + getDocTypeEN(5) + "',"
+    typelist += "'" + getDocTypeEN(6) + "',"
+    typelist += "'" + getDocTypeEN(7) + "',"
+    typelist += "'" + getDocTypeEN(8) + "',"
+    typelist += "'" + getDocTypeEN(9) + "',"
+    typelist += "'" + getDocTypeEN(10) + "',"
+    typelist += "'" + getDocTypeEN(11) + "',"
+    typelist += "'" + getDocTypeEN(12) + "',"
+    typelist += "'" + getDocTypeEN(13) + "',"
+    typelist += "'" + getDocTypeEN(14) + "',"
+    typelist += "'" + getDocTypeEN(15) + "',"
+    typelist += "'" + getDocTypeEN(16) + "',"
+    typelist += "'" + getDocTypeEN(17) + "'"
+    
+    
     grid_options = """
     {
         defaultColDef: {
@@ -522,13 +521,20 @@ def GetGridOptions():
         }, 
           columnDefs: [
           {headerName: "ID", field: "id"},
-          {headerName: "File", field: "file"},
-          {headerName: "StudyNo", field: "SN"},
-          {headerName: "Size", field: "size"},
-          {headerName: "Type", field: "type"},
-          {headerName: "Publ", field: "pub", cellRenderer: 'checkboxRenderer', editable: true},
-          {headerName: "DataPubl", field: "datapub", cellRenderer: 'checkboxRenderer', editable: true},
-          
+          {headerName: "File", field: "file", cellStyle: {'background-color': 'papayawhip'}},
+          {headerName: "StudyNo", field: "SN", cellStyle: {'background-color': 'papayawhip'}},
+          {headerName: "Size", field: "size", cellStyle: {'background-color': 'papayawhip'}},
+          {headerName: "DBKSize", field: "dbksize"},
+          {headerName: "Type", field: "type", cellStyle: {'background-color': 'papayawhip'}},
+          {headerName: "DBKType", field: "dbktype", 
+                cellStyle: {'background-color': 'darkseagreen'}, 
+                cellEditor: 'agSelectCellEditor', cellEditorParams: {
+                    values: ["""+typelist+"""]
+                    }, editable: true},          
+          {headerName: "Publ", field: "pub", cellRenderer: 'checkboxRenderer', editable: true, cellStyle: {'background-color': 'darkseagreen'}},
+          {headerName: "DataPubl", field: "datapub", cellRenderer: 'checkboxRenderer', editable: true, cellStyle: {'background-color': 'darkseagreen'}},
+          {headerName: "CommentDE", field: "commentde", editable: true, cellStyle: {'background-color': 'darkseagreen'}},
+          {headerName: "CommentEN", field: "commenten", editable: true, cellStyle: {'background-color': 'darkseagreen'}},
           {headerName: "CheckDBKEdit", field: "dbk", width: 10}
           
         ],
@@ -543,4 +549,154 @@ def GetGridOptions():
     # , cellRenderer: 'agCheckboxCellRenderer', editable: true
     # , cellRenderer: 'agCheckboxCellRenderer', editable: true, cellEditor: 'agCheckboxCellEditor'
     #
+    
+    
+    """
+    Liste der Material-Typen:
+
+    1	Fragebogen	Questionnaire
+    2	Methodenbericht	Method Report
+    3	Codebuch	Codebook
+    4	sonstiges	Other Document
+    5	Datensatz	Dataset
+    6	Datengeber-Bericht	Data Depositor Report
+    7	Code-/Spaltenplan	Codeplan
+    8	Anmerkungen	Remarks
+    9	Studienbeschreibung	Study Description
+    10	Tabelle	Table
+    11	Methodenfragebogen	Method Questionnaire
+    12	Bericht	Report
+    13	Kartenspiel/Listenheft	Cards/Lists
+    14	Variablenreport	Variable Report
+    15	Leitfaden	Guidelines
+    16	Nutzungsvertrag	User Contract
+    17	DDI-C Codebuch	DDI-C Codebook
+    """
     return grid_options
+
+def getDocTypeDE(docnum):
+    
+    docType = ""
+    
+    if docnum==1:
+        docType = "Fragebogen"
+    elif docnum==2:
+        docType = "Methodenbericht"
+    elif docnum==3:
+        docType = "Codebuch"
+    elif docnum==4:
+        docType = "sonstiges"
+    elif docnum==5:
+        docType = "Datensatz"
+    elif docnum==6:
+        docType = "Datengeber-Bericht"
+    elif docnum==7:
+        docType = "Code-/Spaltenplan"
+    elif docnum==8:
+        docType = "Anmerkungen"
+    elif docnum==9:
+        docType = "Studienbeschreibung"
+    elif docnum==10:
+        docType = "Tabelle"
+    elif docnum==11:
+        docType = "Methodenfragebogen"
+    elif docnum==12:
+        docType = "Bericht"
+    elif docnum==13:
+        docType = "Kartenspiel/Listenheft"
+    elif docnum==14:
+        docType = "Variablenreport"
+    elif docnum==15:
+        docType = "Leitfaden"
+    elif docnum==16:
+        docType = "Nutzungsvertrag"
+    elif docnum==17:
+        docType = "DDI-C Codebuch"    
+        
+    return docType
+
+def getDocTypeEN(docnum):
+    
+    docType = ""
+    
+    if docnum==1:
+        docType = "Questionnaire"
+    elif docnum==2:
+        docType = "Method Report"
+    elif docnum==3:
+        docType = "Codebook"
+    elif docnum==4:
+        docType = "Other Document"
+    elif docnum==5:
+        docType = "Dataset"
+    elif docnum==6:
+        docType = "Data Depositor Report"
+    elif docnum==7:
+        docType = "Codeplan"
+    elif docnum==8:
+        docType = "Remarks"
+    elif docnum==9:
+        docType = "Study Description"
+    elif docnum==10:
+        docType = "Table"
+    elif docnum==11:
+        docType = "Method Questionnaire"
+    elif docnum==12:
+        docType = "Report"
+    elif docnum==13:
+        docType = "Cards/Lists"
+    elif docnum==14:
+        docType = "Variable Report"
+    elif docnum==15:
+        docType = "Guidelines"
+    elif docnum==16:
+        docType = "User Contract"
+    elif docnum==17:
+        docType = "DDI-C Codebook"
+            
+    return docType
+    
+def getDocNumEN(docType):
+    
+    docnum = 0
+    
+    if docType == "Questionnaire":
+        docnum=1
+    elif docType == "Method Report":
+        docnum=2
+    elif docType == "Codebook":
+        docnum=3        
+    elif docType == "Other Document":
+        docnum=4
+    elif docType == "Dataset":
+        docnum=5
+    elif docType == "Data Depositor Report":
+        docnum=6
+    elif docType == "Codeplan":
+        docnum=7
+    elif docType == "Remarks":
+        docnum=8
+    elif docType == "Study Description":
+        docnum=9
+    elif docType == "Table":
+        docnum=10
+    elif docType == "Method Questionnaire":
+        docnum=11
+    elif docType == "Report":
+        docnum=12
+    elif docType == "Cards/Lists":
+        docnum=13
+    elif docType == "Variable Report":
+        docnum=14
+    elif docType == "Guidelines":
+        docnum=15
+    elif docType == "User Contract":
+        docnum=16
+    elif docType == "DDI-C Codebook":
+        docnum=17
+            
+    return docnum
+    
+    
+    
+        

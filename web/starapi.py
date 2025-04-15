@@ -26,9 +26,14 @@ def getFileList(studyno):
 
     lines = ""
     count = 0
-
-    studynodir = studyno[0:5] + "nn"
-
+    
+    if len(studyno)==7:
+        studynodir = studyno[0:5] + "nn" #Länge 5 
+    elif len(studyno)==6:
+        studynodir = studyno[0:4] + "nn" #Länge 4
+    else:
+        studynodir = studyno #nicht vorgesehen
+    
     filepath = os.path.join(
         g.starpath, studynodir, studyno, "Service"
     )  # Service folder for study
@@ -38,6 +43,9 @@ def getFileList(studyno):
         files = os.listdir(filepath)
 
         for file in files:
+            fullfile = os.path.join(filepath, file)
+            if os.path.isdir(fullfile):
+                continue                                       
             count += 1
             filecompletepath = os.path.join(filepath, file)
             filetype = str(GetMaterialtyp(file))
@@ -109,6 +117,11 @@ def GetMaterialtyp(filename):
         GetMtyp = 5  # Datensatz
     if ".DTA" in filenameU:
         GetMtyp = 5  # Datensatz
+    #new 2024-12-19
+    if ".SPS" in filenameU:
+        GetMtyp = 5  # Datensatz
+    if ".DO" in filenameU:
+        GetMtyp = 5  # Datensatz               
 
     if "_B." in filenameU:
         GetMtyp = 6  # Datengeber-Bericht

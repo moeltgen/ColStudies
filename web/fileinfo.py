@@ -119,7 +119,7 @@ def fileinfo(request):
                 grid2 = jp.AgGrid(
                     a=wp,
                     options=grid_options,
-                    style="height: 320px;width: 800px;margin: 0.1em;",
+                    style="height: 320px;width:1500px;margin: 0.1em;",
                 )  # style='height: 200px; width: 300px; margin: 0.25em'
 
                 # AddGridRows(grid2, agency, Id, Version, result)

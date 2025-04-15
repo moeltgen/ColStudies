@@ -59,21 +59,32 @@ def studies(request):
                     grid = jp.AgGrid(
                         a=wp,
                         options=grid_options,
-                        style="height: 350px;width: 1100px;margin: 0.1em;",
+                        style="height: 350px;width:1500px;margin: 0.1em;",
                     )  # style='height: 200px; width: 300px; margin: 0.25em'
                     grid.html_columns = [5]
-
-                    grid.options.columnDefs[3].cellClass = [
-                        "w-56"
-                    ]  # width .w-56	width: 14rem;
-                    grid.options.columnDefs[4].cellClass = ["w-56"]  # width
+                    
+                    # see https://v2.tailwindcss.com/docs/width
+                    grid.options.columnDefs[3].cellClass = ["w-80"]  # width .w-56	width: 14rem;
+                    grid.options.columnDefs[4].cellClass = ["w-80"]  # width
                     # grid.options.columnDefs[5].cellClass = ['hover:bg-blue-500']
+                    
+                    #counter=0
                     for item in L[1]["Results"]:
-                        # print(item)
-                        # print('')
+                        #print(item)
+                        #print('')
                         agency = item["AgencyId"]
                         Id = item["Identifier"]
                         Version = item["Version"]
+                        
+                        #get StudyNo if available  
+                        #counter += 1
+                        StudyNo=""
+                        #if not counter > 25: # lasts too long for 6000 studies 
+                        #    studyresult = c.get_an_item(agency, Id)
+                        #    if str(studyresult[0]) == "200":
+                        #        if studyresult[1]["Item"] is not None:
+                        #            StudyNo = ed.getStudyNo(studyresult[1]["Item"])
+                       
 
                         include = True
                         if not SeriesAgency == "" and not SeriesId == "":
@@ -108,6 +119,7 @@ def studies(request):
                                 "Title": title,
                                 "TitleEN": titleEN,
                                 "Details": DetailsLink,
+                                # "StudyNo": StudyNo,
                             }
                             grid.options.rowData.append(row)
 
@@ -118,8 +130,12 @@ def studies(request):
                 wp.add(jp.P(text="Error, no studies found", classes="m-2"))
 
         else:
-            wp.add(jp.P(text="You are not logged in.", classes="m-2"))
-
+            wp.add(jp.P(text="You are not logged in to Colectica.", classes="m-2"))
+    
+        #wp.add(
+        #    jp.Div(text="StudyNo is displayed only for up to 25 studies")
+        #    )
+            
     except Exception as e:
         print("Error in " + __file__)
         print("Error " + str(e))
@@ -145,6 +161,7 @@ def GetGridOptions():
               {headerName: "Title", field: "Title"},
               {headerName: "TitleEN", field: "TitleEN"},
               {headerName: "Details", field: "Details"}
+              
             ],
               rowData: []
         }

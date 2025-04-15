@@ -7,6 +7,15 @@ This project was inspired by the Colectica API from CLOSER, available at
 
 ## Changes
 
+### Version 0.6
+Several improvements have been added:
+- Added a menu item for Search: This allows to search Colectica studies and display the list of results.
+- Search function has an option to display the Study Number of the study.
+- DBKEdit login page added for easier use.
+- Star info is now displayed in different colors to see which source it has.
+- Star info can now be edited to include correct document type and remark fields in English and German.
+
+
 ### Version 0.5
 Sign in to DBKEdit if no Username/Password specified in settings. Prepare file and annotations functions.
 

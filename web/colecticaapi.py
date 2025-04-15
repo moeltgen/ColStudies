@@ -55,7 +55,7 @@ def general_search(
 
     # MaxResults=0 returns all results
     jsonquery = {
-        "Cultures": ["en-US"],
+        "Cultures": ["en", "de", "en-US", "de-DE"],
         "ItemTypes": [item_type],
         "LanguageSortOrder": ["en-US"],
         "MaxResults": MaxResults,
@@ -68,10 +68,13 @@ def general_search(
     }
     tokenHeader = g.session_data["tokenHeader"]
     URL = "https://" + g.colecticahostname + "/api/v1/_query/"
-
+    
+    #print(jsonquery)
+    
     response = requests.post(URL, headers=tokenHeader, json=jsonquery, verify=False)
+    
     if response.ok:
-        # print(response.json())
+        #print(response.json())
         return [response.status_code, response.json()]
     else:
         return [response.status_code, ""]

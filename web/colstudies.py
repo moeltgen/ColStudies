@@ -8,6 +8,7 @@ import globalvars as g
 
 # modules for routes
 import login
+import dbklogin
 import series
 import studies
 import study
@@ -15,6 +16,7 @@ import doiinfo
 import fileinfo
 import starinfo
 import annotations
+import search
 
 
 def home():
@@ -63,10 +65,13 @@ print("")
 
 # add routes
 jp.Route("/login", login.login)
+jp.Route("/dbklogin", dbklogin.login)
 jp.Route("/logout", login.logout)
+jp.Route("/dbklogout", dbklogin.logout)
 jp.Route("/studies", studies.studies)
 jp.Route("/studies/{agency}/{id}", studies.studies)
 jp.Route("/series", series.series)
+jp.Route("/search", search.search)
 
 jp.Route("/study/{agency}/{id}", study.study)
 jp.Route("/doiinfo/{agency}/{id}", doiinfo.doiinfo)
@@ -96,6 +101,10 @@ if not g.colecticausername == "":
     print("  - colecticausername is set")
 if not g.colecticapassword == "":
     print("  - colecticapassword is set")
+if not g.dbkeditusername == "":
+    print("  - dbkeditusername is set")
+if not g.dbkeditpassword == "":
+    print("  - dbkeditpassword is set")
 
 
 print("")

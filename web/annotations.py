@@ -146,7 +146,7 @@ def annotations(request):
         grid = jp.AgGrid(
             a=wp,
             options=grid_options,
-            style="height: 320px;width: 1100px;margin: 0.1em;",
+            style="height: 320px;width:1500px;margin: 0.1em;",
         )  # style='height: 200px; width: 300px; margin: 0.25em'
         # grid.html_columns = [4]
 

@@ -32,7 +32,7 @@ def series():
                     grid = jp.AgGrid(
                         a=wp,
                         options=grid_options,
-                        style="height: 350px;width: 1100px;margin: 0.1em;",
+                        style="height: 350px;width:1500px;margin: 0.1em;",
                     )  # style='height: 200px; width: 300px; margin: 0.25em'
                     grid.html_columns = [5]
 
@@ -82,7 +82,7 @@ def series():
                 wp.add(jp.P(text="Error, no series found", classes="m-2"))
 
         else:
-            wp.add(jp.P(text="You are not logged in.", classes="m-2"))
+            wp.add(jp.P(text="You are not logged in to Colectica.", classes="m-2"))
 
     except Exception as e:
         print("Error in " + __file__)
