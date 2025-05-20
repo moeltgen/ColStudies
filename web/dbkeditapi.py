@@ -39,7 +39,7 @@ def postFileList(studyno, filelist):
     parse result: 'we need: <id> <file> <SN> <size> <type> <datapubl> <publ>
 
     Request Type: POST
-    URL: https://svko-dbk-test03.gesis.intra/dbkedit/getFileList.asp?study=0017&format=txt
+    URL: https://svko-dbk-test03.gesis.intra/dbkedit/postFileList.asp
     """
 
     import urllib3
@@ -52,7 +52,7 @@ def postFileList(studyno, filelist):
 
     username = g.dbkeditusername
     password = g.dbkeditpassword
-
+    
     response = requests.post(
         URL,
         headers=dbkeditheaders,

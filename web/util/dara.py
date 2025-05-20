@@ -208,6 +208,7 @@ def register_dara(daraxmlfile, daraapi, username, password):
 
     try:
         daraheaders = {"Content-Type": "application/xml;charset=UTF-8"}
+        params = {"registration": "true"}
 
         # get dara xml from file
         with io.open(daraxmlfile, "r", encoding="utf8") as f:
@@ -216,6 +217,7 @@ def register_dara(daraxmlfile, daraapi, username, password):
         # do a POST request
         response = requests.post(
             daraapi,
+            params=params, 
             data=daraxml.encode("utf8"),
             headers=daraheaders,
             auth=(username, password),
