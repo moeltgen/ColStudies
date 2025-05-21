@@ -7,6 +7,12 @@ This project was inspired by the Colectica API from CLOSER, available at
 
 ## Changes
 
+### Version 0.7
+Improved:
+- da|ra login page added for easier use.
+- da|ra accepts direct registration, not only a draft
+- DBKEdit STAR files properties now support option to export SPSS and export language
+
 ### Version 0.6
 Several improvements have been added:
 - Added a menu item for Search: This allows to search Colectica studies and display the list of results.
@@ -58,7 +64,7 @@ python -m piptools compile --upgrade --extra dev --allow-unsafe --generate-hashe
 
 License: MIT License
 
-Copyright (c) 2023 Wolfgang Zenk-Möltgen, GESIS
+Copyright (c) 2025 Wolfgang Zenk-Möltgen, GESIS
 
 
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
