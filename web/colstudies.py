@@ -9,6 +9,7 @@ import globalvars as g
 # modules for routes
 import login
 import dbklogin
+import daralogin
 import series
 import studies
 import study
@@ -66,8 +67,10 @@ print("")
 # add routes
 jp.Route("/login", login.login)
 jp.Route("/dbklogin", dbklogin.login)
+jp.Route("/daralogin", daralogin.login)
 jp.Route("/logout", login.logout)
 jp.Route("/dbklogout", dbklogin.logout)
+jp.Route("/daralogout", daralogin.logout)
 jp.Route("/studies", studies.studies)
 jp.Route("/studies/{agency}/{id}", studies.studies)
 jp.Route("/series", series.series)

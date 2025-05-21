@@ -204,6 +204,11 @@ def register_dara(daraxmlfile, daraapi, username, password):
     """
     register the DOI/Version of the given xml at dara
     """
+    
+    import urllib3
+
+    urllib3.disable_warnings()
+    
     returnmsg = ""
 
     try:
@@ -267,6 +272,45 @@ def register_dara(daraxmlfile, daraapi, username, password):
             # no JSON returned
             # print('no JSON returned')
             returnmsg += "no JSON returned" + "\n"
+
+    except Exception as e:
+        print("Error in " + __file__)
+        print("Error " + str(e))
+        print(traceback.format_exc())
+
+    return returnmsg
+
+def logintest_dara(daraapi, username, password):
+    """
+    test if login is possible
+    """
+    returnmsg = ""
+    
+    import urllib3
+
+    urllib3.disable_warnings()
+    
+    try:
+        daraheaders = {"Content-Type": "application/xml;charset=UTF-8"}
+
+        
+        # do a POST request
+        response = requests.post(
+            daraapi,
+            headers=daraheaders,
+            auth=(username, password),
+            verify=False,
+        )
+
+        if response.status_code==400:
+            # print("SUCCESS")
+            return ["1","SUCCESS"]
+        else:
+            # print("FAILED")   
+            # print(response)
+            return ["0","FAILED"]
+        
+     
 
     except Exception as e:
         print("Error in " + __file__)

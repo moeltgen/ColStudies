@@ -8,13 +8,15 @@ import socket
 import menu
 
 appname = "ColStudies"
-appversion = "0.6"
+appversion = "0.7"
 session_data = {}
 loggedin = False
 status = ""
 colecticahosthoststatus = "" 
 dbkloggedin = False
 dbkstatus = ""
+daraloggedin = False
+darastatus = ""
 
 
 # settings

@@ -19,6 +19,12 @@ def menu(wp):
     else:
         DBKUserName = ""
         
+    # dara login status
+    if "darausername" in g.session_data:
+        darausername = g.session_data["darausername"]
+    else:
+        darausername = ""
+    
 
     jp.Hr(a=wp)
     # -------------
@@ -60,6 +66,14 @@ def menu(wp):
         # DBK Button Login
         jp.A(text="DBKLogin", href="/dbklogin", a=menudiv, classes=g.button)
 
+    if not darausername == "":
+        # Button Logout
+        jp.A(text="DaraLogout", href="/daralogout", a=menudiv, classes=g.button)
+
+    else:
+        # dara Button Login
+        jp.A(text="DaraLogin", href="/daralogin", a=menudiv, classes=g.button)
+
     # jp.Br(a=wp)
 
     # show login status
@@ -85,6 +99,19 @@ def menu(wp):
         jp.Br(a=wp)
     else:
         jp.Div(text=str("DBKEdit"), a=wp, classes="text-right")
+        jp.Div(text="not logged in", a=wp, classes="text-right")
+        jp.Br(a=wp)
+
+    jp.Hr(a=wp)
+    # -------------
+    
+    # show dara login status
+    if not darausername == "":
+        jp.Div(text=str("dara"), a=wp, classes="text-right")
+        jp.Div(text="logged in as " + str(darausername), a=wp, classes="text-right")
+        jp.Br(a=wp)
+    else:
+        jp.Div(text=str("dara"), a=wp, classes="text-right")
         jp.Div(text="not logged in", a=wp, classes="text-right")
         jp.Br(a=wp)
 

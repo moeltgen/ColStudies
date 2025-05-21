@@ -19,7 +19,7 @@ def doiinfo(request):
         # register form submitted
         def submit_form(self, msg):
             if g.darausername == "" or g.darapassword == "":
-                resulttext = "No username or password for da|ra supplied in settings.py"
+                resulttext = "Not logged in to da|ra! \n"
                 print(resulttext)
                 registerstatus.text = resulttext
             else:

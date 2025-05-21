@@ -74,7 +74,7 @@ def starinfo(request):
         AddGridRows_checkDBK(grid2, agency, Id, Version, result)
 
         if str(result[0]) == "200":
-            # print('Result: '+ str(result[1]))
+            #print('Result: '+ str(result[1]))
             xmlstatus.text = "Done"
         else:
             print("Error: " + str(result[0]))
@@ -232,7 +232,7 @@ def starinfo(request):
                 grid2 = jp.AgGrid(
                     a=wp,
                     options=grid_options,
-                    style="height: 600px;width:1500px;margin: 0.1em;",
+                    style="height: 600px;width:2100px;margin: 0.1em;",
                 )  # style='height: 200px; width: 300px; margin: 0.25em'
 
                 # add the data to grid2
@@ -410,7 +410,10 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
 
                     # for x in linedata:
                     #    print(x)
-                    # print(linedata)
+                    #print(linedata)
+                    l = len(linedata)
+                    #print(l)
+                    
                     FileId = linedata[0]
                     file = linedata[1]
                     SN = linedata[2]
@@ -421,9 +424,18 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
                     commentde = linedata[7]
                     commenten = linedata[8]
                     
+                    if l>9:
+                        spssexport = linedata[9]
+                    else:
+                        spssexport = "N"
+                    if l>10:
+                        spsslang = linedata[10]
+                    else:
+                        spsslang = ""
+                    
                     commentde = commentde.strip('\"')
                     commenten = commenten.strip('\"')
-                    
+                    spsslang = spsslang.strip('\"')
                     
                     # print(file, datapub)
                     fileinfo = {}
@@ -440,6 +452,8 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
                     
                     fileinfo["commentde"] = commentde
                     fileinfo["commenten"] = commenten
+                    fileinfo["spssexport"] = spssexport
+                    fileinfo["spsslang"] = spsslang
 
                     dbkfile[file] = fileinfo
 
@@ -469,6 +483,13 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
                     row["datapub"] = False
                 row["commentde"] = dbkfile[filetocheck]["commentde"]                                                
                 row["commenten"] = dbkfile[filetocheck]["commenten"]                                                
+                
+                
+                if dbkfile[filetocheck]["spssexport"] == "J":
+                    row["spssexport"] = True
+                else:
+                    row["spssexport"] = False
+                row["spsslang"] = dbkfile[filetocheck]["spsslang"]                                                
                 
                 
             else:
@@ -535,6 +556,9 @@ def GetGridOptions():
           {headerName: "DataPubl", field: "datapub", cellRenderer: 'checkboxRenderer', editable: true, cellStyle: {'background-color': 'darkseagreen'}},
           {headerName: "CommentDE", field: "commentde", editable: true, cellStyle: {'background-color': 'darkseagreen'}},
           {headerName: "CommentEN", field: "commenten", editable: true, cellStyle: {'background-color': 'darkseagreen'}},
+          {headerName: "CommentEN", field: "commenten", editable: true, cellStyle: {'background-color': 'darkseagreen'}},
+          {headerName: "SPSS Export", field: "spssexport", cellRenderer: 'checkboxRenderer', editable: true, cellStyle: {'background-color': 'darkseagreen'}},
+          {headerName: "SPSS Language", field: "spsslang", editable: true, cellStyle: {'background-color': 'darkseagreen'}},
           {headerName: "CheckDBKEdit", field: "dbk", width: 10}
           
         ],
