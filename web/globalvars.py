@@ -8,7 +8,7 @@ import socket
 import menu
 
 appname = "ColStudies"
-appversion = "0.7"
+appversion = "0.8"
 session_data = {}
 loggedin = False
 status = ""

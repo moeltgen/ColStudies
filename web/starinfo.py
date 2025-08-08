@@ -119,9 +119,6 @@ def starinfo(request):
         
         result = d.postFileList(StudyNo, filelist)
         
-        
-        
-
         if str(result[0]) == "200":
             print("Result: " + str(result[1]))
             xmlstatus.text = str(result[1])
@@ -140,7 +137,75 @@ def starinfo(request):
         xmlstatus.text = ""
         wp.page.update()
 
+    #######################
+    #functions for select
+    def submit_selform1(self, msg):
+        print("Form submitted for select all", StudyNo)
+        
+        filelist = grid2.options.rowData
+        
+        for fileinfo in filelist:
+            fileinfo["select"] = True 
+        
+        grid2.options.rowData = filelist 
+        xmlstatus.text = str("selected all")
+        
+        wp.page.update()
 
+    def reset_selform1(self, msg):
+        xmlstatus.text = ""
+        wp.page.update()
+    
+    def submit_selform2(self, msg):
+        print("Form submitted for select none", StudyNo)
+        
+        filelist = grid2.options.rowData
+        
+        for fileinfo in filelist:
+            fileinfo["select"] = False
+        
+        grid2.options.rowData = filelist 
+        xmlstatus.text = str("selected none")
+        
+        wp.page.update()
+
+    def reset_selform2(self, msg):
+        xmlstatus.text = ""
+        wp.page.update()
+
+        
+    def submit_selform3(self, msg):
+        print("Form submitted for deleting selected at DBKEdit", StudyNo)
+        
+        filelist = grid2.options.rowData
+        filedelete = []
+        for fileinfo in filelist:
+            if fileinfo["select"]==True:
+                filedelete.append(fileinfo)
+
+        result = d.postFileListDelete(StudyNo, filedelete)
+        
+        if str(result[0]) == "200":
+            print("Result: " + str(result[1]))
+            xmlstatus.text = str(result[1])
+        
+        elif str(result[0]) == "401":
+            print("Error: " + str(result[0]))
+            xmlstatus.text = "Error: " + str(result[0]) + " - Not authorized: You are not logged in to DBKEdit \n" + str(result[1])
+        
+        else:
+            print("Error: " + str(result[0]))
+            xmlstatus.text = "Error: " + str(result[0]) + "\n" + str(result[1])
+        
+        
+        wp.page.update()
+
+    def reset_selform3(self, msg):
+        xmlstatus.text = ""
+        wp.page.update()
+    #
+    ########################
+    
     # start page
     wp = g.templatewp()
 
@@ -228,6 +293,8 @@ def starinfo(request):
                 # create table grid for STAR info
                 wp.add(jp.P(text="STAR files for study ", classes="m-2 text-xl"))
                 wp.add(jp.P(text="Folder " + filepath, classes="m-2 text-l"))
+                
+                
                 grid_options = GetGridOptions()
                 grid2 = jp.AgGrid(
                     a=wp,
@@ -321,6 +388,50 @@ def starinfo(request):
                 sendform2.on("submit", submit_sendform2)
                 sendform2.on("click", reset_sendform2)
 
+                ###################
+                #new select buttons
+                
+                buttonsdiv3 = jp.Div(
+                    text="", a=wp, classes=g.menuul, style="display: flex;"
+                )
+                # Select all 
+                selform1 = jp.Form(a=buttonsdiv3, classes="border m-1 p-1")
+                xmlform2submit_button = jp.Input(
+                    value="Select All",
+                    type="submit",
+                    a=selform1,
+                    classes=g.actionbutton,
+                )
+                selform1.on("submit", submit_selform1)
+                selform1.on("click", reset_selform1)
+                
+                # Select none
+                selform2 = jp.Form(a=buttonsdiv3, classes="border m-1 p-1")
+                xmlform2submit_button = jp.Input(
+                    value="Select None",
+                    type="submit",
+                    a=selform2,
+                    classes=g.actionbutton,
+                )
+                selform2.on("submit", submit_selform2)
+                selform2.on("click", reset_selform2)
+                
+                # Delete Selected
+                selform3 = jp.Form(a=buttonsdiv3, classes="border m-1 p-1")
+                xmlform2submit_button = jp.Input(
+                    value="Delete selected from DBKEdit",
+                    type="submit",
+                    a=selform3,
+                    classes=g.actionbutton,
+                )
+                selform3.on("submit", submit_selform3)
+                selform3.on("click", reset_selform3)
+                
+                
+                
+                #
+                ###################
+
 
             else:
                 print("Error get_an_item, status " + str(result[0]))
@@ -377,6 +488,7 @@ def AddGridRows(grid, agency, Id, Version, result):
                     "datapub": datapub,
                     "col": col,
                     "dbk": dbk,
+                    "select": False
                 }
                 grid.options.rowData.append(row)
 
@@ -463,7 +575,7 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
         # now check each file
         for row in grid.options.rowData:
             filetocheck = row["file"]
-
+            
             if filetocheck in dbkfile:
                 # print('found')
                 newValue = "FOUND"
@@ -490,8 +602,7 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
                 else:
                     row["spssexport"] = False
                 row["spsslang"] = dbkfile[filetocheck]["spsslang"]                                                
-                
-                
+        
             else:
                 # print('not found')
                 newValue = "NOTFOUND"
@@ -500,6 +611,53 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
             # set result
             row["dbk"] = newValue  # like     node.setDataValue(colKey,newValue)
 
+        # added in version 0.8
+        # now check each file if it is present; add if not present 
+        filelist = grid2.options.rowData    #existing files 
+        #loop through dbkeditfiles 
+        for filename in dbkfile:
+            
+            found=False 
+            for existingfile in filelist:
+                if existingfile["file"]==filename:
+                    found=True
+                    break 
+            
+            if not found: 
+                fileinfo = dbkfile[filename]
+                #not used:            
+                #typecode = getDocNumEN(fileinfo["dbktype"])
+                pub = False 
+                datapub = False 
+                spssexport= False 
+                if fileinfo["pub"] == "J":
+                    pub = True 
+                if fileinfo["datapub"] == "J":
+                    datapub = True 
+                if fileinfo["spssexport"] == "J":
+                    spssexport = True 
+                
+                row = {
+                        "id": fileinfo["id"],
+                        "file": fileinfo["file"],
+                        "SN": fileinfo["SN"],
+                        "size": "",
+                        "dbksize": fileinfo["dbksize"],              
+                        "type": "",
+                        "dbktype": fileinfo["dbktype"],              
+                        "pub": pub,
+                        "datapub": datapub,
+                        "commentde": fileinfo["commentde"],
+                        "commenten": fileinfo["commenten"],
+                        "spssexport": spssexport,
+                        "spsslang": fileinfo["spsslang"],                    
+                        "dbk": "ADDITIONAL",
+                        "select": True
+                    }
+                
+                grid.options.rowData.append(row)
+                
+        
         if result[0] == "205":
             # reset status
             result[0] = "200"
@@ -556,11 +714,11 @@ def GetGridOptions():
           {headerName: "DataPubl", field: "datapub", cellRenderer: 'checkboxRenderer', editable: true, cellStyle: {'background-color': 'darkseagreen'}},
           {headerName: "CommentDE", field: "commentde", editable: true, cellStyle: {'background-color': 'darkseagreen'}},
           {headerName: "CommentEN", field: "commenten", editable: true, cellStyle: {'background-color': 'darkseagreen'}},
-          {headerName: "CommentEN", field: "commenten", editable: true, cellStyle: {'background-color': 'darkseagreen'}},
           {headerName: "SPSS Export", field: "spssexport", cellRenderer: 'checkboxRenderer', editable: true, cellStyle: {'background-color': 'darkseagreen'}},
           {headerName: "SPSS Language", field: "spsslang", editable: true, cellStyle: {'background-color': 'darkseagreen'}},
-          {headerName: "CheckDBKEdit", field: "dbk", width: 10}
-          
+          {headerName: "CheckDBKEdit", field: "dbk", width: 10},
+          {headerName: "Select", field: "select", cellRenderer: 'checkboxRenderer', editable: true, cellStyle: {'background-color': 'bittersweet'}}
+                    
         ],
           rowData: []
     }

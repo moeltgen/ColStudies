@@ -7,6 +7,10 @@ This project was inspired by the Colectica API from CLOSER, available at
 
 ## Changes
 
+### Version 0.8
+Added:
+- STAR info shows files present in DBKEdit but not in STAR folder; they can now be deleted by selection
+
 ### Version 0.7
 Improved:
 - da|ra login page added for easier use.

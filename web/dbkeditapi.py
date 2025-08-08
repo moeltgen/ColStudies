@@ -69,6 +69,46 @@ def postFileList(studyno, filelist):
 
     print(response)
 
+def postFileListDelete(studyno, filelist):
+    """
+
+    post the files THAT WILL BE DELETED for a study to DBKEdit
+    active logged in session for DBKEdit required
+
+    parse result: 'we need: <id> <file> <SN> <size> <type> <datapubl> <publ>
+
+    Request Type: POST
+    URL: https://svko-dbk-test03.gesis.intra/dbkedit/postFileListDelete.asp
+    """
+
+    import urllib3
+
+    urllib3.disable_warnings()
+    
+    dbkeditheaders = {"Content-Type": "application/xml;charset=UTF-8"}
+
+    URL = g.dbkediturl + "postFileListDelete.asp"
+
+    username = g.dbkeditusername
+    password = g.dbkeditpassword
+    
+    response = requests.post(
+        URL,
+        headers=dbkeditheaders,
+        auth=(username, password),
+        json=filelist,
+        verify=False,
+    )
+    if response.ok:
+        #print(response.text)
+        return [response.status_code, response.text]
+    else:
+        #print(response.text)
+        return [response.status_code, response.text]
+
+    print(response)
+
+
 def LoginTest(username, password):
     """
 
