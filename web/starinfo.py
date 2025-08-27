@@ -549,7 +549,7 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
                     commenten = commenten.strip('\"')
                     spsslang = spsslang.strip('\"')
                     
-                    # print(file, datapub)
+                    #print(file, datapub)
                     fileinfo = {}
                     fileinfo["id"] = FileId
                     fileinfo["file"] = file
@@ -568,14 +568,14 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
                     fileinfo["spsslang"] = spsslang
 
                     dbkfile[file] = fileinfo
-
+                    
         # grid.options.columnDefs[5].editable = True
         # grid.options.columnDefs[5].checkboxSelection = True
 
         # now check each file
-        for row in grid.options.rowData:
+        filelist = grid.options.rowData    #existing files (NOT grid2 here !!!)
+        for row in filelist:
             filetocheck = row["file"]
-            
             if filetocheck in dbkfile:
                 # print('found')
                 newValue = "FOUND"
@@ -610,13 +610,12 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
 
             # set result
             row["dbk"] = newValue  # like     node.setDataValue(colKey,newValue)
-
+        
         # added in version 0.8
         # now check each file if it is present; add if not present 
-        filelist = grid2.options.rowData    #existing files 
+            
         #loop through dbkeditfiles 
         for filename in dbkfile:
-            
             found=False 
             for existingfile in filelist:
                 if existingfile["file"]==filename:
@@ -656,7 +655,7 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
                     }
                 
                 grid.options.rowData.append(row)
-                
+                print("DBKEdit file added", fileinfo["file"])
         
         if result[0] == "205":
             # reset status
