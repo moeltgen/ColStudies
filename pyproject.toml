@@ -1,6 +1,6 @@
 [project]
 name = "ColStudies"
-version = "0.7"
+version = "0.8"
 description = "A lightweight user interface to the Colectica Repository API"
 maintainers = [{ name = "Wolfgang Zenk-Möltgen" }]
 license = { text = "MIT License" }
