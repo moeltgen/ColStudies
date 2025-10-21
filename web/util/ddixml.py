@@ -132,7 +132,7 @@ def ddixml_to_study(ddixml, cvcollection, studyurl):
     # Create a new study object: just an empty object or defined study with getnewstudy()
     # study = {}
     study = getnewstudy()
-
+    
     # Map the ddi properties to the study properties
     root = ed.remove_xml_ns(ddixml)
     xml = (
@@ -235,6 +235,18 @@ def ddixml_to_study(ddixml, cvcollection, studyurl):
     study["CollDatesEnd"] = getCollDatesList(
         root, ".//StudyUnit/Coverage/TemporalCoverage/ReferenceDate", "EndDate"
     )
+    
+    #UPDATE 2025-10-17 CollDates not from Coverage, but from CollectionEvents
+    #print("Fill", "CollDatesStart")
+    study["CollDatesStart"] = getCollDatesList(
+        root, ".//DataCollection/CollectionEvent/DataCollectionDate", "StartDate"
+    )
+    #print(study["CollDatesStart"])
+    #print("Fill", "CollDatesEnd")
+    study["CollDatesEnd"] = getCollDatesList(
+        root, ".//DataCollection/CollectionEvent/DataCollectionDate", "EndDate"
+    )
+    #print(study["CollDatesEnd"])
 
     # needed for dara and DOI registration:
     # study['DataURL'] = 'https://search.gesis.org/research_data/' + study['No']          #valid and reachable URL needed

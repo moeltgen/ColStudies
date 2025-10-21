@@ -7,6 +7,12 @@ This project was inspired by the Colectica API from CLOSER, available at
 
 ## Changes
 
+### Version 0.9
+Added:
+- Python script cdcstudies.py can export CESSDA CDC format of the studies that have a GESIS Study Number 
+- Requirements are to enter in settings.py: colecticahostname, colecticausername, colecticapassword
+- This script can be run without the JustPy server being started: `python web/cdcstudies.py`
+
 ### Version 0.8
 Added:
 - STAR info shows files present in DBKEdit but not in STAR folder; they can now be deleted by selection

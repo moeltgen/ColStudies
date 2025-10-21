@@ -259,7 +259,8 @@ def getValueFromXPathCustomField(node, xpath, label):
                 jsonvalue = uid.find("./AttributeValue").text
                 j = json.loads(jsonvalue)
                 if j["DisplayLabel"] == label:
-                    return j["StringValue"]
+                    if "StringValue" in j:
+                        return j["StringValue"]
     return ""  # default empty
 
 
