@@ -14,19 +14,25 @@ anyio==4.10.0
     # via
     #   httpx
     #   starlette
+backports-tarfile==1.2.0
+    # via jaraco-context
 certifi==2025.8.3
     # via
     #   httpcore
     #   httpx
     #   requests
+cffi==2.0.0
+    # via cryptography
 charset-normalizer==3.4.3
     # via requests
 click==8.2.1
     # via uvicorn
-colorama==0.4.6
-    # via click
+cryptography==46.0.3
+    # via secretstorage
 docutils==0.22
     # via readme-renderer
+exceptiongroup==1.3.1
+    # via anyio
 fastapi==0.116.1
     # via justpy
 h11==0.16.0
@@ -46,6 +52,8 @@ idna==3.10
     #   anyio
     #   httpx
     #   requests
+importlib-metadata==8.7.1
+    # via keyring
 itsdangerous==2.2.0
     # via justpy
 jaraco-classes==3.4.0
@@ -54,6 +62,10 @@ jaraco-context==6.0.1
     # via keyring
 jaraco-functools==4.3.0
     # via keyring
+jeepney==0.9.0
+    # via
+    #   keyring
+    #   secretstorage
 jinja2==3.1.6
     # via justpy
 justpy==0.14.0
@@ -80,6 +92,8 @@ psutil==7.0.0
     # via justpy
 pycountry==24.6.1
     # via -r requirements.in
+pycparser==2.23
+    # via cffi
 pydantic==2.11.7
     # via fastapi
 pydantic-core==2.33.2
@@ -88,8 +102,6 @@ pygments==2.19.2
     # via
     #   readme-renderer
     #   rich
-pywin32-ctypes==0.2.3
-    # via keyring
 readme-renderer==44.0
     # via twine
 requests==2.32.5
@@ -104,6 +116,8 @@ rfc3986==2.0.0
     # via twine
 rich==14.1.0
     # via twine
+secretstorage==3.5.0
+    # via keyring
 sniffio==1.3.1
     # via anyio
 starlette==0.47.3
@@ -115,14 +129,17 @@ twine==6.1.0
 typing-extensions==4.15.0
     # via
     #   anyio
+    #   cryptography
+    #   exceptiongroup
     #   fastapi
     #   pydantic
     #   pydantic-core
     #   starlette
     #   typing-inspection
+    #   uvicorn
 typing-inspection==0.4.1
     # via pydantic
-urllib3==2.5.0
+urllib3==2.6.3
     # via
     #   -r requirements.in
     #   requests
@@ -133,3 +150,5 @@ websockets==15.0.1
     # via justpy
 wheel==0.45.1
     # via justpy
+zipp==3.23.0
+    # via importlib-metadata
