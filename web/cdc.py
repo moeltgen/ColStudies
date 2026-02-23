@@ -365,8 +365,8 @@ def getCitation(study):
             xmlstring += '</verStmt>\n'
 
             #URL to study description'new 2021-02-11 '2.9.3 not only in docDscr also in stdyDscr
-            xmlstring += '<holdings xml:lang="en" URI="https://search.gesis.org/research_data/ZA' + study["No"] + '?lang=en"/>\n'
-            xmlstring += '<holdings xml:lang="de" URI="https://search.gesis.org/research_data/ZA' + study["No"] + '?lang=de"/>\n'        
+            xmlstring += '<holdings xml:lang="en" URI="https://search.gesis.org/research_data/' + study["No"] + '?lang=en"/>\n' #v0.9.1 remove duplicate ZA
+            xmlstring += '<holdings xml:lang="de" URI="https://search.gesis.org/research_data/' + study["No"] + '?lang=de"/>\n' #v0.9.1 remove duplicate ZA       
 
             xmlstring += "</citation>\n"
         
@@ -692,8 +692,8 @@ def dict_study_to_root(study, cvcoll):
         xmlstring += '<AuthEnty xml:lang="de" affiliation="GESIS">GESIS - Leibniz Institut für Sozialwissenschaften</AuthEnty>\n'
         xmlstring += "</rspStmt>\n"
         
-        xmlstring += '<holdings xml:lang="en" URI="https://search.gesis.org/research_data/ZA' + study["No"] + '?lang=en"/>\n'
-        xmlstring += '<holdings xml:lang="de" URI="https://search.gesis.org/research_data/ZA' + study["No"] + '?lang=de"/>\n'        
+        xmlstring += '<holdings xml:lang="en" URI="https://search.gesis.org/research_data/' + study["No"] + '?lang=en"/>\n' #v0.9.1 remove duplicate ZA
+        xmlstring += '<holdings xml:lang="de" URI="https://search.gesis.org/research_data/' + study["No"] + '?lang=de"/>\n' #v0.9.1 remove duplicate ZA       
         
         xmlstring += "</citation>\n"
         xmlstring += "</docDscr>\n"

@@ -7,6 +7,11 @@ This project was inspired by the Colectica API from CLOSER, available at
 
 ## Changes
 
+### Version 0.91
+Coreected:
+- Removed duplicate "ZA" in cdc exports
+- Updated python modules and requirements
+
 ### Version 0.9
 Added:
 - Python script cdcstudies.py can export CESSDA CDC format of the studies that have a GESIS Study Number 
@@ -74,7 +79,7 @@ python -m piptools compile --upgrade --extra dev --allow-unsafe --generate-hashe
 
 License: MIT License
 
-Copyright (c) 2025 Wolfgang Zenk-Möltgen, GESIS
+Copyright (c) 2026 Wolfgang Zenk-Möltgen, GESIS
 
 
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
