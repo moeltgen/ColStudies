@@ -44,6 +44,8 @@ idna==3.11
     #   anyio
     #   httpx
     #   requests
+importlib-metadata==8.7.1
+    # via keyring
 itsdangerous==2.2.0
     # via justpy
 jaraco-classes==3.4.0
@@ -52,6 +54,10 @@ jaraco-context==6.1.0
     # via keyring
 jaraco-functools==4.4.0
     # via keyring
+jeepney==0.9.0
+    # via
+    #   keyring
+    #   secretstorage
 jinja2==3.1.6
     # via justpy
 justpy==0.14.0
@@ -88,8 +94,6 @@ pygments==2.19.2
     # via
     #   readme-renderer
     #   rich
-pywin32-ctypes==0.2.3
-    # via keyring
 readme-renderer==44.0
     # via twine
 requests==2.32.5
@@ -112,6 +116,8 @@ twine==6.2.0
 typing-extensions==4.15.0
     # via
     #   anyio
+    #   cryptography
+    #   exceptiongroup
     #   fastapi
     #   pydantic
     #   pydantic-core
@@ -133,3 +139,5 @@ websockets==16.0
     # via justpy
 wheel==0.46.3
     # via justpy
+zipp==3.23.0
+    # via importlib-metadata
