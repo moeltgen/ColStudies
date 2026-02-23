@@ -173,7 +173,7 @@ def get_cdcxml(agency, Id):
             outdir = "CDC" #not "out"
             if not os.path.exists(outdir):
                 os.makedirs(outdir)
-            xmlfile = "cdc_" + str(StudyNo)  + ".xml"  # xml file name #  not + "_" + str(Id)
+            xmlfile = str(StudyNo)  + ".xml"  # xml file name #  not + "_" + str(Id) #v0.9.1 do not use cdc_ in the filename 
 
             # check if CVCollection was saved already
             cvfile = os.path.join(outdir, "CVCollection.json")
