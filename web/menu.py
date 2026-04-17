@@ -25,6 +25,11 @@ def menu(wp):
     else:
         darausername = ""
     
+    # DataCite login status
+    if "dataciteusername" in g.session_data:
+        dataciteusername = g.session_data["dataciteusername"]
+    else:
+        dataciteusername = ""
 
     jp.Hr(a=wp)
     # -------------
@@ -73,6 +78,14 @@ def menu(wp):
     else:
         # dara Button Login
         jp.A(text="DaraLogin", href="/daralogin", a=menudiv, classes=g.button)
+    
+    if not dataciteusername == "":
+        # Button Logout
+        jp.A(text="DataCiteLogout", href="/datacitelogout", a=menudiv, classes=g.button)
+
+    else:
+        # DataCite Button Login
+        jp.A(text="DataCiteLogin", href="/datacitelogin", a=menudiv, classes=g.button)
 
     # jp.Br(a=wp)
 

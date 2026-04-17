@@ -9,6 +9,39 @@ import requests
 import util.ddixml as ddi  # moved to util folder
 
 
+def html_decode(s):
+    """
+    Returns the ASCII decoded version of the given HTML string. This does
+    NOT remove normal HTML tags like <p>.
+    """
+    htmlCodes = (
+            ("'", '&#39;'),
+            ('"', '&quot;'),
+            ('>', '&gt;'),
+            ('<', '&lt;'),
+            ('&', '&amp;')
+        )
+    for code in htmlCodes:
+        s = s.replace(code[1], code[0])
+    return s
+
+def html_encode(s):
+    """
+    Returns the HTML encoded version of the given ASCII string. 
+    """
+    htmlCodes = (
+            ('&', '&amp;'), #needs to be first 
+            ("'", '&#39;'),
+            ('"', '&quot;'),
+            ('>', '&gt;'),
+            ('<', '&lt;')            
+        )
+    for code in htmlCodes:
+        s = s.replace(code[0], code[1])
+    return s
+
+    
+
 def write_daraxml_fromddixml(filename, ddixml, cvcoll, studyurl):
     """
     Builds the dara xml as tree and writes it into file
@@ -53,7 +86,7 @@ def get_daraxml_tree_fromddixml(ddixml, cvcoll, studyurl):
 
         xmlstring += dict_study_to_root(study)
         xmlstring += footer()
-
+        
         tree = ET.ElementTree(ET.fromstring(xmlstring))
         # xmlRoot = tree.getroot()
         # child = xml.Element("NewNode")
@@ -117,11 +150,11 @@ def dict_study_to_root(study):
         xmlstring += " <titles>\n"
         xmlstring += "  <title>\n"
         xmlstring += "   <language>de</language>\n"
-        xmlstring += "   <titleName>" + study["TitleDE"] + "</titleName>\n"
+        xmlstring += "   <titleName>" + html_encode(study["TitleDE"]) + "</titleName>\n"
         xmlstring += "  </title>\n"
         xmlstring += "  <title>\n"
         xmlstring += "   <language>en</language>\n"
-        xmlstring += "   <titleName>" + study["TitleEN"] + "</titleName>\n"
+        xmlstring += "   <titleName>" + html_encode(study["TitleEN"]) + "</titleName>\n"
         xmlstring += "  </title>\n"
         xmlstring += " </titles>\n"
 

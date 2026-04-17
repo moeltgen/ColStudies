@@ -8,7 +8,7 @@ import socket
 import menu
 
 appname = "ColStudies"
-appversion = "0.9"
+appversion = "1.0"
 session_data = {}
 loggedin = False
 status = ""
@@ -17,7 +17,8 @@ dbkloggedin = False
 dbkstatus = ""
 daraloggedin = False
 darastatus = ""
-
+dataciteloggedin = False
+datacitestatus = ""
 
 # settings
 colecticahostname = settings.colecticahostname
@@ -38,10 +39,16 @@ dbkeditpassword = settings.dbkeditpassword
 # settings for STAR File Storage
 starpath = settings.starpath
 
+#DataCite settings
+dataciteapi = settings.dataciteapi
+dataciteusername = settings.dataciteusername
+datacitepassword = settings.datacitepassword
+
 
 # classes
 button = "m-2 p-2 text-xl text-white bg-blue-500 hover:bg-blue-700 rounded-full "  # flex items-center'
 darabutton = "m-2 p-2 text-xl text-white bg-yellow-500 hover:bg-yellow-700 rounded-full "  # flex items-center'
+datacitebutton = "m-2 p-2 text-xl text-white bg-purple-500 hover:bg-purple-700 rounded-full "  # flex items-center'
 dbkeditbutton = "m-2 p-2 text-xl text-white bg-green-500 hover:bg-green-700 rounded-full "  # flex items-center'
 starbutton = "m-2 p-2 text-xl text-white bg-gray-500 hover:bg-gray-700 rounded-full "  # flex items-center'
 actionbutton = "m-2 p-2 text-xl text-white bg-red-500 hover:bg-red-700 rounded-full "  # flex items-center'

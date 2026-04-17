@@ -10,10 +10,12 @@ import globalvars as g
 import login
 import dbklogin
 import daralogin
+import datacitelogin
 import series
 import studies
 import study
 import doiinfo
+import dataciteinfo
 import fileinfo
 import starinfo
 import annotations
@@ -68,9 +70,11 @@ print("")
 jp.Route("/login", login.login)
 jp.Route("/dbklogin", dbklogin.login)
 jp.Route("/daralogin", daralogin.login)
+jp.Route("/datacitelogin", datacitelogin.login)
 jp.Route("/logout", login.logout)
 jp.Route("/dbklogout", dbklogin.logout)
 jp.Route("/daralogout", daralogin.logout)
+jp.Route("/datacitelogout", datacitelogin.logout)
 jp.Route("/studies", studies.studies)
 jp.Route("/studies/{agency}/{id}", studies.studies)
 jp.Route("/series", series.series)
@@ -78,6 +82,7 @@ jp.Route("/search", search.search)
 
 jp.Route("/study/{agency}/{id}", study.study)
 jp.Route("/doiinfo/{agency}/{id}", doiinfo.doiinfo)
+jp.Route("/dataciteinfo/{agency}/{id}", dataciteinfo.dataciteinfo)
 jp.Route("/fileinfo/{agency}/{id}", fileinfo.fileinfo)
 jp.Route("/starinfo/{agency}/{id}", starinfo.starinfo)
 jp.Route("/annotations/{agency}/{id}", annotations.annotations)

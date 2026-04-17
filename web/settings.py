@@ -25,3 +25,8 @@ dbkeditpassword = ""
 
 # settings for STAR File Storage
 starpath = "N:\\Networkdrive\\Networkfolder\\folder"
+
+# settings for DataCite
+dataciteapi = "https://api.test.datacite.org/dois" #TEST API
+dataciteusername = ""
+datacitepassword = ""

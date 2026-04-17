@@ -185,7 +185,14 @@ def study(request):
                         a=buttonsdiv,
                         classes=g.darabutton,
                     )
-
+                    
+                    jp.A(
+                        text="DataCite Info",
+                        href="/dataciteinfo/" + agency + "/" + Id,
+                        a=buttonsdiv,
+                        classes=g.datacitebutton,
+                    )
+                    
                     jp.A(
                         text="STAR Info",
                         href="/starinfo/" + agency + "/" + Id,
@@ -206,7 +213,14 @@ def study(request):
                         a=buttonsdiv,
                         classes=g.annotationbutton,
                     )
-
+                    
+                    """
+                    # temp: show all possible tailwind css color classes
+                    d = jp.Div(classes='flex flex-wrap m-2', a=wp)
+                    for color in jp.Tailwind.tw_dict['text_color']:
+                        jp.Div(text=color, classes=f'{color} font-mono p-1 text-lg bg-blue-100 hover:bg-red-500 w-48', a=d)
+                    """
+                    
                     """
                     #disabled, does not yet work
                     

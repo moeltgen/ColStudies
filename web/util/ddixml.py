@@ -217,6 +217,8 @@ def ddixml_to_study(ddixml, cvcollection, studyurl):
     study[
         "Publisher"
     ] = "GESIS - Leibniz Institute for the Social Sciences"  # fixed value
+    
+    
 
     # todo: use extra publication year ??
     # study['PublicationYear'] will be filled from PhysicalInstance (fragment must be present in ddixml)
@@ -229,13 +231,13 @@ def ddixml_to_study(ddixml, cvcollection, studyurl):
     study["PublicationYear"] = pubYear
 
     # List of collection dates, may be YYYY or YYYY-MM or YYYY-MM-DD (for StartDate, optional also for EndDate)
-    study["CollDatesStart"] = getCollDatesList(
-        root, ".//StudyUnit/Coverage/TemporalCoverage/ReferenceDate", "StartDate"
-    )
-    study["CollDatesEnd"] = getCollDatesList(
-        root, ".//StudyUnit/Coverage/TemporalCoverage/ReferenceDate", "EndDate"
-    )
-    
+    #study["CollDatesStart"] = getCollDatesList(
+    #    root, ".//StudyUnit/Coverage/TemporalCoverage/ReferenceDate", "StartDate"
+    #)
+    #study["CollDatesEnd"] = getCollDatesList(
+    #    root, ".//StudyUnit/Coverage/TemporalCoverage/ReferenceDate", "EndDate"
+    #)
+    #
     #UPDATE 2025-10-17 CollDates not from Coverage, but from CollectionEvents
     #print("Fill", "CollDatesStart")
     study["CollDatesStart"] = getCollDatesList(
