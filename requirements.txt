@@ -74,7 +74,7 @@ justpy==0.14.0
     # via -r requirements.in
 keyring==25.7.0
     # via twine
-lxml==5.3.0
+lxml==6.1.0
     # via -r requirements.in
 markdown-it-py==4.0.0
     # via rich
