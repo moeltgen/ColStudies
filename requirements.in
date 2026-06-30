@@ -1,5 +1,7 @@
+cryptography==49.0.0
+idna==3.18
 justpy==0.14.0
 lxml==6.1.0
 pycountry==26.2.16
-Requests==2.33.1
-urllib3==2.6.3
+Requests==2.34.2
+urllib3==2.7.0
