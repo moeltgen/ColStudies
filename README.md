@@ -7,6 +7,11 @@ This project was inspired by the Colectica API from CLOSER, available at
 
 ## Changes
 
+### Version 1.1
+Corrected:
+- Function to login to DataCite and register DOIs with DataCite
+- Security bugfixes
+
 ### Version 1.0
 Added:
 - New function to login to DataCite and register DOIs with DataCite instead of da|ra

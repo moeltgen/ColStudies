@@ -1,6 +1,6 @@
 {
-  "title": "ColStudies: A web-frontend to Colectica API to register DOIs with da|ra",
-  "description": "Basic ColStudies application, connect to Colectica repository, view studies, register DOIs with da|ra.",
+  "title": "ColStudies: A web-frontend to Colectica API to register DOIs with DataCite or da|ra",
+  "description": "Basic ColStudies application, connect to Colectica repository, view studies, register DOIs with DataCite or da|ra.",
   "creators": [
     {
       "name": "Zenk-Möltgen, Wolfgang",
@@ -9,7 +9,7 @@
     }
   ],
   "keywords": [
-    "Colectica, da|ra, DDI, DOI, metadata"
+    "Colectica, DataCite, da|ra, DDI, DOI, metadata"
   ],
   "license": {
     "id": "mit"

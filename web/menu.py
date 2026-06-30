@@ -89,7 +89,7 @@ def menu(wp):
 
     # jp.Br(a=wp)
 
-    # show login status
+    # show Colectica login status
     if not userName == "":
         jp.Div(text=str(g.colecticahostname), a=wp, classes="text-right")
         jp.Div(text="logged in as " + str(userName), a=wp, classes="text-right")
@@ -125,6 +125,19 @@ def menu(wp):
         jp.Br(a=wp)
     else:
         jp.Div(text=str("dara"), a=wp, classes="text-right")
+        jp.Div(text="not logged in", a=wp, classes="text-right")
+        jp.Br(a=wp)
+
+    jp.Hr(a=wp)
+    # -------------
+    
+    # show DataCite login status
+    if not dataciteusername == "":
+        jp.Div(text=str("DataCite"), a=wp, classes="text-right")
+        jp.Div(text="logged in as " + str(dataciteusername), a=wp, classes="text-right")
+        jp.Br(a=wp)
+    else:
+        jp.Div(text=str("DataCite"), a=wp, classes="text-right")
         jp.Div(text="not logged in", a=wp, classes="text-right")
         jp.Br(a=wp)
 
