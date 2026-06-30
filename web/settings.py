@@ -27,6 +27,6 @@ dbkeditpassword = ""
 starpath = "N:\\Networkdrive\\Networkfolder\\folder"
 
 # settings for DataCite
-dataciteapi = "https://api.test.datacite.org/dois" #TEST API
+dataciteapi = "https://api.datacite.org/dois" 
 dataciteusername = ""
 datacitepassword = ""

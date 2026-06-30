@@ -18,13 +18,17 @@ def dataciteinfo(request):
     try:
         # register form submitted
         def submit_form(self, msg):
-            if g.darausername == "" or g.darapassword == "":
-                resulttext = "Not logged in to da|ra! \n"
+            if g.dataciteusername == "" or g.datacitepassword == "":
+                resulttext = "Not logged in to DataCite! \n"
                 print(resulttext)
                 registerstatus.text = resulttext
             else:
                 print("Form submitted for registration of DOI")
-                resulttext = dararegister(agency, Id)
+                #switch if 
+                additionalInfo = False 
+                print("additionalInfo (compared to dara):", additionalInfo)
+            
+                resulttext = dataciteregister(agency, Id, additionalInfo)
                 registerstatus.text = resulttext
 
             wp.page.update()
@@ -296,32 +300,35 @@ def GetGridOptions():
     return grid_options
 
 
-def dararegister(agency, Id):
+def dataciteregister(agency, Id, additionalInfo):
     """
-    post the daraxml to the dara API to register the DOI
+    post the datacite json to the DataCite API to register the DOI
+    
+    additionalInfo=True means that more metadata fields are transferred, compared to the dara metadata 
+    
     """
 
     xmltext = ""
 
     try:
         if g.loggedin:
-            xmltext = "dara xml \n"
+            xmltext = "DataCite json \n"
 
-            daraxml = get_daraxml(agency, Id)
+            datacitejson = get_datacitejson(agency, Id, additionalInfo)
+            
             xmltext += " - built successfully \n"
-            print("daraxml built successfully ")
+            print("datacite json built successfully ")
 
             outdir = "out"
-            xmlfile = "dara_" + str(Id) + ".xml"  # xml file name
+            jsnfile = "datacite_" + str(Id) + ".json"  # json file name
 
-            xmltext += " - call register_dara(create or update) at " + g.daraapi + " \n"
-            print("call register_dara(create or update) at " + g.daraapi)
+            xmltext += " - call register_datacite(create or update) at " + g.dataciteapi + " \n"
+            print("call register_datacite(create or update) at " + g.dataciteapi)
 
-            # todo: IS currently DRAFT at da|ra!
-
-            regresult = dara.register_dara(
-                os.path.join(outdir, xmlfile), g.daraapi, g.darausername, g.darapassword
+            regresult = datacite.register_datacite(
+                os.path.join(outdir, jsnfile), g.dataciteapi, g.dataciteusername, g.datacitepassword
             )  # call the registration api #get settings from globalvars.py
+            
             xmltext += " - Result: " + regresult + " \n"
             print(regresult)
 

@@ -85,7 +85,7 @@ def get_datacite_json_fromddixml(ddixml, cvcoll, studyurl, additionalInfo):
         attributes = dict_study_to_json(study, additionalInfo)
         content['type'] = "dois"
         content['attributes'] = attributes
-       
+        
         data['data'] = content
 
         #print(data)
@@ -387,7 +387,11 @@ def dict_study_to_json(study, additionalInfo):
         #DOI 
         content['doi'] = doi.strip()
         
-        #no event
+        
+        content['event'] = "publish"
+        #“event”: “publish”
+        #this needs to be included for direct registration, set state to FINDABLE 
+        #otherwise DOI will have the DRAFT state
         
 
     except Exception as e:
@@ -397,7 +401,111 @@ def dict_study_to_json(study, additionalInfo):
 
     return content
 
+def register_datacite(datacitejsonfile, dataciteapi, username, password):
+    """
+    register the DOI/Version of the given json at DataCite
+    """
+    
+    import urllib3
 
+    urllib3.disable_warnings()
+    
+    returnmsg = ""
+
+    try:
+        dataciteheaders = {"Content-Type": "application/vnd.api+json", "Accept": "application/vnd.api+json"}
+        params = {"registration": "true"}
+
+        # get datacite json from file
+        with io.open(datacitejsonfile, "r", encoding="utf8") as f:
+            datacitejson = f.read()
+
+        # do a POST request #for CREATE
+        response = requests.post(
+            dataciteapi,
+            params=params, 
+            data=datacitejson.encode("utf8"),
+            headers=dataciteheaders,
+            auth=(username, password),
+            verify=False,
+        )
+
+        if response.status_code == 200 or response.status_code == 201:
+            # print('OK or Created: ' + str(response.status_code) )
+            returnmsg += "OK or Created: " + str(response.status_code) + "\n"
+            
+            
+        elif response.status_code == 1024 or response.status_code == 422: #This DOI has already been taken
+            
+            try:
+                # do a PUT request #for UPDATE
+                response = requests.put(
+                    dataciteapi,
+                    params=params, 
+                    data=datacitejson.encode("utf8"),
+                    headers=dataciteheaders,
+                    auth=(username, password),
+                    verify=False,
+                )
+                if response.status_code == 200 or response.status_code == 201:
+                    # print('OK or Created: ' + str(response.status_code) )
+                    returnmsg += "OK or Updated: " + str(response.status_code) + "\n"
+                else:
+                    # print('Error Status: ' + str(response.status_code) )
+                    returnmsg += "Error Status: " + str(response.status_code) + "\n"
+            except Exception as e:
+                print("Error in " + __file__)
+                print("Error " + str(e))
+                print(traceback.format_exc())
+        
+            
+        else:
+            # print('Error Status: ' + str(response.status_code) )
+            returnmsg += "Error Status: " + str(response.status_code) + "\n"
+
+        """
+        #get <div id="msg_update"
+        pos = response.text.find('msg_update') #'<div id="msg_update"'
+        if pos>0: 
+            print('Error!\n' + response.text[pos:pos+800])
+        pos = response.text.find(' alert') 
+        if pos>0: 
+            print('Error!\n' + response.text[pos:pos+800])
+        else:
+            pos = response.text.find('alert-info') 
+            if pos>0: print('Error!\n' + response.text[pos:pos+800])
+        """
+
+        ##write to output file
+        # f = open('daraapi_response', "w", encoding="utf-8")
+        # f.write(response.text)
+        # f.close()
+
+        # try to parse json response
+        try:
+            isError = False
+            jsonResponse = response.json()
+            for item in jsonResponse:
+                if item == "errors":
+                    isError = True
+            if isError:
+                print("Result: ERROR!")
+            else:
+                print("Result: Success")
+            # print(str(jsonResponse))
+            returnmsg += str(jsonResponse) + "\n"
+
+        except ValueError:
+            # no JSON returned
+            # print('no JSON returned')
+            returnmsg += "no JSON returned" + "\n"
+
+    except Exception as e:
+        print("Error in " + __file__)
+        print("Error " + str(e))
+        print(traceback.format_exc())
+
+    return returnmsg
 
 def logintest_datacite(dataciteapi, username, password):
     """
