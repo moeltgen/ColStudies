@@ -145,7 +145,7 @@ typing-inspection==0.4.2
     # via
     #   fastapi
     #   pydantic
-urllib3==2.7.0
+urllib3==2.8.0
     # via
     #   -r requirements.in
     #   id
@@ -157,5 +157,5 @@ websockets==16.0
     # via justpy
 wheel==0.46.3
     # via justpy
-zipp==4.1.0
+zipp==4.1.1
     # via importlib-metadata

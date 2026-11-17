@@ -4,4 +4,4 @@ justpy==0.14.0
 lxml==6.1.0
 pycountry==26.2.16
 Requests==2.34.2
-urllib3==2.7.0
+urllib3==2.8.0
