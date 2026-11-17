@@ -18,7 +18,7 @@ anyio==4.14.2
     #   starlette
 backports-tarfile==1.2.0
     # via jaraco-context
-certifi==2026.1.4
+certifi==2026.10.18
     # via
     #   httpcore
     #   httpx
