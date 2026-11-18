@@ -151,6 +151,9 @@ def dict_study_to_json(study, additionalInfo):
         creators = []
         for itm in study["Creators"]:
             #print(itm)
+            #in dara was no empty firstname allowed, so we have - in there; replace it
+            if itm["FirstName"]=="-": itm["FirstName"]=""
+            
             if itm["FirstName"]=="" and itm["Name"]=="":
                 if not itm["Affiliation"]=="":
                     cr = {"name": itm["Affiliation"].strip(), "nameType": "Organizational", "affiliation": [], "nameIdentifiers":[]}
@@ -259,6 +262,8 @@ def dict_study_to_json(study, additionalInfo):
         #study["TopicsDE"] = []
         # Topics: CESSDA Topic Classification
         subjects = []
+        
+        #CESSDA Topics 
         for topic in study["CESSDATopicsDE"]:
             if not topic=="":        
                 subject = {"lang": "de", "subject": topic, "subjectScheme": "CESSDA Topic Classification"}
@@ -267,6 +272,13 @@ def dict_study_to_json(study, additionalInfo):
             if not topic=="":        
                 subject = {"lang": "en", "subject": topic, "subjectScheme": "CESSDA Topic Classification"}
                 subjects.append(subject)
+        
+        #add Social Sciences as a default subject
+        #<subject xml:lang=”en” subjectScheme="European Science Vocabulary (EuroSciVoc)" schemeURI="http://publications.europa.eu/resource/dataset/euroscivoc" classificationCode="29" valueURI=”https://publications.europa.eu/resource/authority/8mn/euroscivoc/12c980a5-034f-4cd5-8ce7-fcfe109c675c”>Social Sciences</subject>
+        subject = {"lang": "de", "subject": "Sozialwissenschaften", "subjectScheme": "European Science Vocabulary (EuroSciVoc)", "schemeUri": "http://publications.europa.eu/resource/dataset/euroscivoc", "classificationCode": "29"}
+        subjects.append(subject)
+        subject = {"lang": "en", "subject": "Social Sciences", "subjectScheme": "European Science Vocabulary (EuroSciVoc)", "schemeUri": "http://publications.europa.eu/resource/dataset/euroscivoc", "classificationCode": "29"}
+        subjects.append(subject)
         
         #add all subjects     
         content['subjects'] = subjects  
@@ -385,8 +397,9 @@ def dict_study_to_json(study, additionalInfo):
         
         
         #DOI 
-        content['doi'] = doi.strip()
-        
+        content['doi'] = doi.strip()  #.lower()    
+        # new lowercase, since DataCite DOIs are not case sensitive, but recommended in lowercase  
+        # https://support.datacite.org/docs/datacite-doi-display-guidelines#dois-urls-and-case-sensitivity
         
         content['event'] = "publish"
         #“event”: “publish”
@@ -401,7 +414,7 @@ def dict_study_to_json(study, additionalInfo):
 
     return content
 
-def register_datacite(datacitejsonfile, dataciteapi, username, password):
+def register_datacite(datacitejsonfile, dataciteapi, username, password, doi):
     """
     register the DOI/Version of the given json at DataCite
     """
@@ -435,12 +448,15 @@ def register_datacite(datacitejsonfile, dataciteapi, username, password):
             returnmsg += "OK or Created: " + str(response.status_code) + "\n"
             
             
-        elif response.status_code == 1024 or response.status_code == 422: #This DOI has already been taken
+        elif response.status_code == 1024 or response.status_code == 422 or response.status_code == 404: #This DOI has already been taken / The resource you are looking for doesn't exist.
+            
+            print("Warning: Create failed, trying Update", response.status_code)
             
             try:
                 # do a PUT request #for UPDATE
+                # new 2026-11-18 the update requires to add the DOI to the endpoint url 
                 response = requests.put(
-                    dataciteapi,
+                    dataciteapi + "/" + doi,
                     params=params, 
                     data=datacitejson.encode("utf8"),
                     headers=dataciteheaders,

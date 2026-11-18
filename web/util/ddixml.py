@@ -414,9 +414,14 @@ def ddixml_to_study(ddixml, cvcollection, studyurl):
     study["GroupTopics"] = []  # List of Group topics, unclear????
     study["GroupTopicsDE"] = []  # List of Group topics, unclear????
 
-    # study['CESSDATopicsEN'] = getCVTerms(root, './/StudyUnit/Coverage/TopicalCoverage/Subject', False, cvcollection['Subject'])
-    # study['CESSDATopicsDE'] = getCVTerms(root, './/StudyUnit/Coverage/TopicalCoverage/Subject', True, cvcollection['Subject'])
-
+    
+    
+    #enable subjects
+    study['CESSDATopicsEN'] = getCVTerms(root, './/StudyUnit/Coverage/TopicalCoverage/Subject', False, cvcollection['Subject'])
+    study['CESSDATopicsDE'] = getCVTerms(root, './/StudyUnit/Coverage/TopicalCoverage/Subject', True, cvcollection['Subject'])
+    
+    
+    
     # Groups
     study["GroupIDs"] = ed.getListFromXPath(
         root, './/Group/UserID[@typeOfUserID="GESIS Group Number"]'

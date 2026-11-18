@@ -182,7 +182,9 @@ def starinfo(request):
         for fileinfo in filelist:
             if fileinfo["select"]==True:
                 filedelete.append(fileinfo)
-
+        
+        #print(filedelete)
+        
         result = d.postFileListDelete(StudyNo, filedelete)
         
         if str(result[0]) == "200":
@@ -581,6 +583,7 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
                 newValue = "FOUND"
                 # set new values
                 row["id"] = dbkfile[filetocheck]["id"]
+                                
                 row["dbksize"] = dbkfile[filetocheck]["dbksize"]
                 
                 row["dbktype"] = dbkfile[filetocheck]["dbktype"]  #todo:  get label from value 
@@ -606,7 +609,7 @@ def AddGridRows_checkDBK(grid, agency, Id, Version, result):
             else:
                 # print('not found')
                 newValue = "NOTFOUND"
-            print("Checking for file ", filetocheck, "result:", newValue)
+            print("Checking for file ", filetocheck, "result:", newValue, "ID:", row["id"])
 
             # set result
             row["dbk"] = newValue  # like     node.setDataValue(colKey,newValue)

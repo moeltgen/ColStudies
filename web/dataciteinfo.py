@@ -315,6 +315,9 @@ def dataciteregister(agency, Id, additionalInfo):
             xmltext = "DataCite json \n"
 
             datacitejson = get_datacitejson(agency, Id, additionalInfo)
+            j = json.loads(datacitejson)
+            doi = j["data"]["attributes"]["doi"]
+            #print(doi)
             
             xmltext += " - built successfully \n"
             print("datacite json built successfully ")
@@ -326,11 +329,11 @@ def dataciteregister(agency, Id, additionalInfo):
             print("call register_datacite(create or update) at " + g.dataciteapi)
 
             regresult = datacite.register_datacite(
-                os.path.join(outdir, jsnfile), g.dataciteapi, g.dataciteusername, g.datacitepassword
+                os.path.join(outdir, jsnfile), g.dataciteapi, g.dataciteusername, g.datacitepassword, doi
             )  # call the registration api #get settings from globalvars.py
             
             xmltext += " - Result: " + regresult + " \n"
-            print(regresult)
+            #print(regresult)
 
         else:
             xmltext = "not logged in"
