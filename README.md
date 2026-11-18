@@ -1,11 +1,17 @@
 # ColStudies
 
-ColStudies is a lightweight user interface to the Colectica Repository API. You can see metadata for studies and register DOIs via DataCite or da|ra. It uses justpy and python.
+ColStudies is a lightweight user interface to the Colectica Repository API. You can see metadata for studies and register DOIs via DataCite (and previously da|ra). It uses justpy and python.
 
 This project was inspired by the Colectica API from CLOSER, available at 
 <https://github.com/CLOSER-Cohorts/colectica-api>
 
 ## Changes
+
+### Version 1.2
+Corrected:
+- Function to Update metadata at DataCite 
+- Include subject themes for DataCite; add "Social Sciences" as a  default subject
+- Security bugfixes
 
 ### Version 1.1
 Corrected:
